@@ -65,13 +65,13 @@ const CardImage: React.FC<CardImageProps> = (props) => {
           {currentImages &&
             currentImages?.map((item) => (
               <ImageListItem
-                key={item.idImage}
+                key={item.id}
                 className="cl-image"
-                onMouseEnter={() => handleMouseEnter(item.idImage)}
+                onMouseEnter={() => handleMouseEnter(item.id)}
                 onMouseLeave={handleMouseLeave}
                 sx={{
                   filter:
-                    hoveredItem === item.idImage
+                    hoveredItem === item.id
                       ? "brightness(80%)"
                       : "none",
                   transition: "filter 0.3s ease",
@@ -83,10 +83,10 @@ const CardImage: React.FC<CardImageProps> = (props) => {
                   srcSet={`${item.linkImage}?w=248&fit=crop&auto=format&dpr=2 2x`}
                   alt={item.titleImage}
                   loading="lazy"
-                  id={item.idImage.toString()}
-                  onClick={() => handleViewImage(item.idImage)}
+                  id={item.id.toString()}
+                  onClick={() => handleViewImage(item.id)}
                 />
-                {hoveredItem === item.idImage && (
+                {hoveredItem === item.id && (
                   <ImageListItemBar
                     title={item.titleImage}
                     subtitle={item.sourceImage}

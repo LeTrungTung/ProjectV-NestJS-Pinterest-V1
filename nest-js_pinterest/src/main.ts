@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as express from 'express';
+import * as cookieParser from 'cookie-parser';
 
 // import express from 'express';
 require('dotenv').config();
@@ -27,6 +28,7 @@ async function bootstrap() {
   };
 
   app.enableCors(corsOptions);
+  app.use(cookieParser());
 
   app.useStaticAssets('uploads'); // Serve ảnh từ thư mục uploads
 

@@ -56,6 +56,14 @@ export class UserController {
     return this.userService.update(+id, user);
   }
 
+  @Patch('/edit-user/:id')
+  async updateUser(
+    @Param('id') id: string,
+    @Body() user: User,
+  ): Promise<User | undefined> {
+    return this.userService.update(+id, user);
+  }
+
   @Patch('/avatar/:id')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }], multerUpload),

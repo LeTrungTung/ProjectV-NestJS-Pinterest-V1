@@ -5,7 +5,7 @@ import axios, {
 import jwtDecode from "jwt-decode";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: "http://localhost:5000",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -17,7 +17,7 @@ axios.defaults.withCredentials = true;
 const refreshToken = async (): Promise<string | undefined> => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/user/refresh-token",
+      "http://localhost:5000/api/v1/user/refresh-token",
       {
         withCredentials: true,
       }

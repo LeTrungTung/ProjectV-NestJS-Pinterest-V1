@@ -8,13 +8,15 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { UserService } from 'src/user/user.service';
+require('dotenv').config();
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: jwtConstants.secret,
+      // secret: jwtConstants.secret,
+      secret: process.env.sceretKey,
       signOptions: { expiresIn: '1h' },
     }),
   ],

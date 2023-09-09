@@ -43,7 +43,7 @@ const Login = () => {
         }
       );
       console.log("sfsfdf", response.data);
-      const { message, accessToken } = response.data;
+      const { accessToken } = response.data;
 
       if (response.data.data.role == 1) {
         // Lưu accessToken vào localStorage

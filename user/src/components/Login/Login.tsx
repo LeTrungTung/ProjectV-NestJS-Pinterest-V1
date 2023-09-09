@@ -3,22 +3,17 @@ import "./Login.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/userSlice";
-import axiosClient from "../../api/axiosClient";
 import { UserAPI } from "../../api/User";
 
-function deleteCookie(name: string) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-}
+// function deleteCookie(name: string) {
+//   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+// }
 
 const Login: React.FC = () => {
   // const [username, setUserName] = useState("");
   const token = localStorage.getItem("token");
   useEffect(() => {
     if (token) {
-      // axiosClient({
-      //   method: 'POST',
-      //   url: '/api/v1/user/logout',
-      // })
       UserAPI.deleteCookie()
         .then(() => {
           localStorage.removeItem("accessToken");
@@ -56,20 +51,25 @@ const Login: React.FC = () => {
       errors.password = "Vui lòng nhập mật khẩu!";
     }
     if (password !== "" && email !== "") {
-      const data = await dipatch(login({ email, password })).unwrap();
+      const data = await dipatch(
+        login({ email, password }) as any
+      ).unwrap();
       console.log("kiẻm tra Đăng nhập", data);
       if (
         password !== "" &&
         email !== "" &&
-        data?.data?.accessToken == null
+        data?.data?.access_token == null
       ) {
         errors.password = "Mật khẩu và password không khớp!";
       }
-      if (data?.data?.data?.status === 0) {
+      if (data?.data?.userLogin?.status === 0) {
         errors.password = "Tài khoản của bạn đã bị khoá!";
       }
-      console.log(data);
-      if (data?.data?.accessToken && data?.data?.data?.status === 1) {
+      console.log("Check data", data);
+      if (
+        data?.data?.access_token &&
+        data?.data?.userLogin?.status === 1
+      ) {
         navigate("/home");
       }
     }

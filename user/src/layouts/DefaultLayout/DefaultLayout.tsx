@@ -12,7 +12,6 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   dataImage,
 }) => {
   const [searchImage, setSearchImage] = useState<string>(""); // Đặt kiểu dữ liệu cho useState
-  const [asyncData, setAsyncData] = useState<any[]>([]); // Đặt kiểu dữ liệu cho useState
 
   const handleSearchImage = (keyword: string) => {
     setSearchImage(keyword);

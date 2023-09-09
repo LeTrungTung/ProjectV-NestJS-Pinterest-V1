@@ -1,8 +1,8 @@
 // src/auth/auth.controller.ts
-import { Controller, Request, Post, UseGuards, Body } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from 'src/guards/auth.guard';
-// import { Request } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('/api/v1/auth')
 export class AuthController {
@@ -27,5 +27,15 @@ export class AuthController {
     } else {
       return { message: 'Login failed' };
     }
+  }
+
+  @Post('/refresh-token')
+  refreshToken(@Req() req: Request, @Res() res: Response) {
+    return this.authService.refreshToken(req, res);
+  }
+
+  @Post('/logout')
+  logout(@Req() req: Request, @Res() res: Response) {
+    return this.authService.logout(req, res);
   }
 }

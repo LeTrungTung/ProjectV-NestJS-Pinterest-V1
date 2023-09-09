@@ -28,24 +28,20 @@ const HeaderOnLogin: React.FC<HeaderOnLoginProps> = ({
     useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchImage, setSearchImage] = useState("");
-  const [currentName, setCurrentName] = useState("");
-  const [newName, setNewName] = useState("");
-  const [listUser, setListUser] = useState<Array<IDataUser>>([]);
+  const [listUser, setListUser] = useState<IDataUser>();
 
   // gọi lại state thay đổi tên username
   const dataUpdateName = useSelector((state: any) => state.editName);
   const userLogin =
     JSON.parse(localStorage.getItem("userLogin")) || [];
 
-  const [isCallImage, setIsCallImage] = useState(true);
-  const [isCallFollow, setIsCallFollow] = useState(true);
-  const idUser = userLogin?.idUser;
+  const idUser = userLogin?.id;
 
   const fetchDataUserById = async (id: number) => {
     try {
       const response = await UserAPI.getUserById(id);
-      console.log("get user successfully:", response.data.data);
-      setListUser(response.data.data);
+      console.log("get user successfully:", response.data);
+      setListUser(response.data);
     } catch (error) {
       console.error("Error get User:", error);
     }
@@ -176,7 +172,7 @@ const HeaderOnLogin: React.FC<HeaderOnLoginProps> = ({
             </div>
           </div>
           <div className="wrap-avata-hover" onClick={handleToProfile}>
-            {listUser[0]?.avatarUser == null ? (
+            {listUser?.avatar == null ? (
               <img
                 src="https://cdn.onlinewebfonts.com/svg/img_542942.png"
                 alt="avatar"
@@ -185,7 +181,7 @@ const HeaderOnLogin: React.FC<HeaderOnLoginProps> = ({
               />
             ) : (
               <img
-                src={listUser[0]?.avatarUser}
+                src={listUser?.avatar}
                 alt="avatar"
                 className="cl-hover"
                 id="avatar"
@@ -210,7 +206,7 @@ const HeaderOnLogin: React.FC<HeaderOnLoginProps> = ({
                   Đang đăng nhập
                 </span>
                 <div className="row-avataemail-name1 hoverto">
-                  {listUser[0]?.avatarUser == null ? (
+                  {listUser?.avatar == null ? (
                     <img
                       src="https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-business-man-icon-png-image_4239598.jpg"
                       alt="avata"
@@ -218,14 +214,14 @@ const HeaderOnLogin: React.FC<HeaderOnLoginProps> = ({
                     />
                   ) : (
                     <img
-                      src={listUser[0]?.avatarUser}
+                      src={listUser?.avatar}
                       alt="avata"
                       className="avata-of"
                     />
                   )}
                   <div className="email-name1">
-                    <span>{listUser[0]?.username}</span>
-                    <span>{listUser[0]?.email}</span>
+                    <span>{listUser?.username}</span>
+                    <span>{listUser?.email}</span>
                   </div>
                 </div>
                 <span

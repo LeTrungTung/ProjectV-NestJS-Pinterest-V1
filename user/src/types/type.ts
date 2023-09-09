@@ -1,16 +1,15 @@
 export interface IDataUserById {
-  idUser: number;
+  id: number;
   username: string;
   email: string;
   password: string;
   role: number;
-  avatarUser: string;
-  follow: number;
+  avatar: string;
   status: number;
 }
 export interface ImageChoice {
   // Define the structure of the imageChoice
-  idImage: number;
+  id: number;
   userCreateId: number;
   linkImage: string;
   categoryImage: string;
@@ -19,10 +18,9 @@ export interface ImageChoice {
   sourceImage: string;
 }
 export interface IDataUser {
-  avatarUser: string;
+  avatar: string;
   email: string;
-  follow: string | null;
-  idUser: number;
+  id: number;
   password: string;
   role: number;
   status: number;
@@ -34,7 +32,7 @@ export interface ISaveImage {
   userSavedId: number;
 }
 export interface ImageComment {
-  idImage: number;
+  id: number;
   userCreateId: number;
   linkImage: string;
   categoryImage: string;
@@ -46,7 +44,7 @@ export interface ImageComment {
   username: string;
   content: string;
   timecreate: string;
-  avatarUser: string | null;
+  avatar: string | null;
 }
 
 export interface IOperationImage {
@@ -55,8 +53,8 @@ export interface IOperationImage {
   userLikeImageId: number | null;
   userLoveImageId: number | null;
   userSavedImageId: number | null;
-  idImage: number;
-  avatarUser: string;
+  id: number;
+  avatar: string;
   username: string;
 }
 export interface ILikeLoveImage {
@@ -68,10 +66,10 @@ export interface ILikeLoveImage {
 }
 
 export interface IFollowUser {
-  avatarUser: string;
+  avatar: string;
   email: string;
   follow: string | null;
-  idUser: number;
+  id: number;
   password: string;
   role: number;
   status: number;
@@ -84,7 +82,7 @@ export interface ILikeLoveComment {
   userLikeCommentId: number | null;
   userLoveCommentId: number | null;
   idComment: number;
-  avatarUser: string;
+  avatar: string;
   username: string;
 }
 export interface IComment {
@@ -109,7 +107,7 @@ export interface IRepComment {
   contentRepComment: string;
   timecreateRep: string;
   username: string;
-  avatarUser: string | null;
+  avatar: string | null;
 }
 export interface IFollow {
   idFollow?: number;

@@ -14,31 +14,31 @@ export class CommentAPI {
     return axiosClient.get(url);
   }
   static postComment(params: any) {
-    const url = `api/v1/comment/add-comment`;
+    const url = `api/v1/comment`;
     return axiosClient.post(url, params);
   }
-  static postRepComment(params: any) {
-    const url = `api/v1/comment/add-rep-comment`;
-    return axiosClient.post(url, params);
-  }
+  // static postRepComment(params: any) {
+  //   const url = `api/v1/comment/add-rep-comment`;
+  //   return axiosClient.post(url, params);
+  // }
   static getLikeLoveComments() {
-    const url = `api/v1/comment/get-like-love-comment`;
+    const url = `api/v1/like-love-comment`;
     return axiosClient.get(url);
   }
   static deleteLikeAtComment(id: number) {
-    const url = `api/v1/comment/delete-like-comment/${id}`;
+    const url = `api/v1/like-love-comment/${id}`;
     return axiosClient.delete(url);
   }
   static postLikeAtComment(params: any) {
-    const url = `api/v1/comment/add-like-comment`;
+    const url = `api/v1/like-love-comment`;
     return axiosClient.post(url, params);
   }
-  static getRepCommentById(id: number) {
-    const url = `/api/v1/comment/get-reps-comment/${id}`;
-    return axiosClient.get(url);
-  }
-  static getAllRepComment() {
-    const url = "api/v1/comment/get-all-rep-comment";
-    return axiosClient.get(url);
-  }
+  // static getRepCommentById(id: number) {
+  //   const url = `/api/v1/comment/get-reps-comment/${id}`;
+  //   return axiosClient.get(url);
+  // }
+  // static getAllRepComment() {
+  //   const url = "api/v1/comment/get-all-rep-comment";
+  //   return axiosClient.get(url);
+  // }
 }

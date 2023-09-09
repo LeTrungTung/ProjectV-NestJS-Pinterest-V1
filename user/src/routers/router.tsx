@@ -14,7 +14,7 @@ import RequiredAuth from "../components/RequireAuth";
 export interface IDataImage {
   categoryImage: string;
   description: string;
-  idImage: number;
+  id: number;
   linkImage: string;
   sourceImage: string;
   titleImage: string;
@@ -29,7 +29,7 @@ const Router: React.FC = () => {
     const fetchDataImage = async () => {
       try {
         const response = await ImageAPI.getAllImages();
-        setImageList(response.data.data);
+        setImageList(response.data);
       } catch (error) {
         console.error("Error retrieving data: ", error);
       }

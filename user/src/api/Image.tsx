@@ -2,23 +2,23 @@ import axiosClient from "./axiosClient";
 
 export class ImageAPI {
   static getAllImages() {
-    const url = "/api/v1/image/get-image";
+    const url = "/api/v1/image";
     return axiosClient.get(url);
   }
   static getImageSaved() {
-    const url = "/api/v1/image/get-image-saved";
+    const url = "/api/v1/images-saved-user";
     return axiosClient.get(url);
   }
   static postImageSaved(params: any) {
-    const url = "/api/v1/image/add-image-saved";
+    const url = "/api/v1/images-saved-user";
     return axiosClient.post(url, params);
   }
   static getImageById(id: number) {
-    const url = `/api/v1/image/get-image-byId/${id}`;
+    const url = `/api/v1/image/${id}`;
     return axiosClient.get(url);
   }
   static deleteImageById(id: number) {
-    const url = `/api/v1/image/delete-image-saved/${id}`;
+    const url = `/api/v1/images-saved-user/${id}`;
     return axiosClient.delete(url);
   }
   static getAllImages_Comments() {
@@ -46,15 +46,15 @@ export class ImageAPI {
     return axiosClient.get(url);
   }
   static getOperationImage() {
-    const url = `/api/v1/image/get-operation-image`;
+    const url = `/api/v1/operation-image`;
     return axiosClient.get(url);
   }
   static deleteLoveImage(id: number) {
-    const url = `/api/v1/image/delete-operation-image/${id}`;
+    const url = `/api/v1/operation-image/${id}`;
     return axiosClient.delete(url);
   }
   static postLoveImage(params: any) {
-    const url = "/api/v1/image/add-love-image";
+    const url = "/api/v1/operation-image";
     return axiosClient.post(url, params);
   }
 }

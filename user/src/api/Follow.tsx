@@ -2,7 +2,7 @@ import axiosClient from "./axiosClient";
 
 export class FollowAPI {
   static getAllFollow_User() {
-    const url = `/api/v1/follow/get-follow-user`;
+    const url = `/api/v1/follow`;
     return axiosClient.get(url);
   }
   static getUserFollowed(id: number) {
@@ -15,11 +15,11 @@ export class FollowAPI {
   }
 
   static deleteFollowed(id: number) {
-    const url = `/api/v1/follow/delete-follow-byid/${id}`;
+    const url = `/api/v1/follow/${id}`;
     return axiosClient.delete(url);
   }
   static addFollowed(params: any) {
-    const url = "/api/v1/follow/add-follow-other";
+    const url = `/api/v1/follow`;
     return axiosClient.post(url, params);
   }
 }

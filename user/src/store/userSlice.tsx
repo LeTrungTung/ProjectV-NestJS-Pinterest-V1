@@ -13,11 +13,11 @@ export interface UserState {
 }
 
 interface LoginResponse {
+  // data: {
   data: {
-    data: {
-      accessToken: string;
-    };
+    access_token: string;
   };
+  // };
 }
 
 export const login = createAsyncThunk(
@@ -25,12 +25,12 @@ export const login = createAsyncThunk(
   async (userData: Promise<any>) => {
     try {
       const response = await UserAPI.login(userData);
-      console.log(response?.data);
+      console.log(555, response?.data);
       localStorage.setItem(
         "userLogin",
-        JSON.stringify(response?.data?.data)
+        JSON.stringify(response?.data?.userLogin)
       );
-      localStorage.setItem("token", response.data.accessToken);
+      localStorage.setItem("token", response.data.access_token);
       return response;
     } catch (error) {
       throw error; // Throwing error so that it can be handled in the rejected action
@@ -52,8 +52,8 @@ const userSlice = createSlice({
       login.fulfilled,
       (state: any, action: PayloadAction<LoginResponse>) => {
         console.log("xem action >>>>>", action.payload);
-        state.data = action.payload.data.data;
-        state.token = action.payload.data.data.accessToken;
+        state.data = action.payload.data;
+        state.token = action.payload.data.access_token;
         state.isLoggedIn = true;
       }
     );
