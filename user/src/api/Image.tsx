@@ -5,6 +5,14 @@ export class ImageAPI {
     const url = "/api/v1/image";
     return axiosClient.get(url);
   }
+  static postImage(params: any) {
+    const url = "/api/v1/image";
+    return axiosClient.post(url, params, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
   static getImageSaved() {
     const url = "/api/v1/images-saved-user";
     return axiosClient.get(url);

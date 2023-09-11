@@ -9,9 +9,13 @@ import {
   Delete,
   Inject,
   Module,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { Image } from '../database/image.entity';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { multerUpload } from 'src/utils/multer';
 
 @Controller('api/v1/image')
 // @Module({
@@ -62,9 +66,20 @@ export class ImageController {
   }
 
   @Post()
-  async create(@Body() image: Image): Promise<Image> {
-    return this.imageService.create(image);
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'linkImage', maxCount: 1 }], multerUpload),
+  )
+  async addImage(@UploadedFiles() files: any, @Body() data: Image) {
+    if (files.linkImage) {
+      data.linkImage = files.linkImage[0].path;
+    }
+    console.log('xem file', files);
+    return this.imageService.create(data);
   }
+
+  // async create(@Body() image: Image): Promise<Image> {
+  //   return this.imageService.create(image);
+  // }
 
   @Patch(':id')
   async update(

@@ -28,7 +28,11 @@ export class UserAPI {
   }
   static editAvatar(id: number, param: any): Promise<any> {
     const url = `api/v1/user/avatar/${id}`;
-    return axiosClient.patch(url, param);
+    return axiosClient.patch(url, param, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   }
   static getUserById(id: number): Promise<any> {
     const url = `/api/v1/user/${id}`;

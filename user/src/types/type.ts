@@ -18,6 +18,7 @@ export interface ImageChoice {
   sourceImage: string;
 }
 export interface IDataUser {
+  user?: any;
   avatar: string;
   email: string;
   id: number;
@@ -32,6 +33,8 @@ export interface ISaveImage {
   userSavedId: number;
 }
 export interface ImageComment {
+  user?: any;
+  image?: any;
   id: number;
   userCreateId: number;
   linkImage: string;
@@ -50,8 +53,19 @@ export interface ImageComment {
 export interface IOperationImage {
   idOperationImage?: number;
   imageOperationId: number;
+  imageOperation: {
+    categoryImage: string;
+    titleImage: string;
+    description: string;
+    id: number;
+    linkImage: string;
+    sourceImage: string;
+    userCreateId: number;
+  };
   userLikeImageId: number | null;
+  userLikeImage?: any;
   userLoveImageId: number | null;
+  userLoveImage?: any;
   userSavedImageId: number | null;
   id: number;
   avatar: string;
@@ -62,7 +76,7 @@ export interface ILikeLoveImage {
   imageOperationId: number;
   userLikeImageId: number | null;
   userLoveImageId: number | null;
-  userSavedImageId: number | null;
+  userSavedImageId?: number | null;
 }
 
 export interface IFollowUser {
@@ -77,6 +91,10 @@ export interface IFollowUser {
   idImage: number;
 }
 export interface ILikeLoveComment {
+  user?: any;
+  commentLikeLove?: any;
+  userLoveComment?: any;
+  userLikeComment?: any;
   idLikeLoveComment: number;
   commentLikeLoveId: number;
   userLikeCommentId: number | null;
@@ -110,6 +128,7 @@ export interface IRepComment {
   avatar: string | null;
 }
 export interface IFollow {
+  userFollowOthers?: any;
   idFollow?: number;
   userFollowedbyId: number;
   userFollowOtherId: number;

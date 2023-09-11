@@ -1,14 +1,18 @@
 .cl-hover {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
+
   object-fit: cover;
 }
 .cl-hover:hover {
   background-color: #e1e1e1;
   cursor: pointer;
   border: none;
-  background-size: 100px;
-  border-width: 10px;
+  background-size: 150px;
+  border-width: 70px;
+  width: 100px;
+  height: 100px;
+  padding: 10px !important;
   border-radius: 50%;
 }
 #header1 {
@@ -51,27 +55,29 @@
   width: 30px;
   height: 30px;
   color: grey;
-  padding: 10px;
   box-sizing: content-box;
   transition: 0.2s;
 }
 
 #minilogo {
-  width: 50px;
-  height: 50px;
-  color: grey;
-  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  /* color: grey; */
+  /* box-sizing: border-box; */
 }
 
 #avatar {
   border-radius: 50%;
+  border: 0.5px solid #e1e1e1;
 }
 #arrow-avatar {
   box-sizing: content-box;
-  padding: 5px;
-  font-weight: 800;
+  /* padding: 5px; */
+  font-weight: 900;
   font-size: 20px;
-  color: rgb(190, 131, 54);
+  color: black;
 }
 #arrow-avatar:hover {
   background-color: #e1e1e1;
@@ -98,7 +104,13 @@
   border: none;
   background-color: white;
   font-weight: 600;
-  color: rgb(132, 100, 18);
+  color: black;
+}
+#arrow-create {
+  font-size: 1.2em;
+  margin-left: 8px;
+  font-weight: 900 !important;
+  color: black;
 }
 
 /* csss menu tại nút mũi tên bên phải */
@@ -183,6 +195,9 @@
 }
 .wrap-avata-hover {
   position: relative;
+}
+.wrap-avata-hover img {
+  border: #ccc solid 1px;
 }
 
 .wrap-avata-hover:hover .view-hover-avatar {

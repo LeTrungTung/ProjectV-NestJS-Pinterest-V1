@@ -3,8 +3,9 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { ImageAPI } from "../../api/Image";
-import axiosClient from "../../api/axiosClient";
 import "./ModalForm.css";
+import { updateName } from "../../store/editNameSlice";
+import { useDispatch } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 
 interface ModalFormProps {
@@ -15,62 +16,59 @@ interface ModalFormProps {
 const ModalForm: React.FC<ModalFormProps> = (props) => {
   const userLogin =
     JSON.parse(localStorage.getItem("userLogin")) || [];
-  const [imgServer, setImgServer] = useState<string>("");
   const [allImages, setAllImages] = useState<any[]>([]);
   const [dataForm, setDataForm] = useState({
-    userCreateId: userLogin?.idUser,
+    userCreateId: userLogin?.id,
     titleImage: "",
     description: "",
     sourceImage: "",
     categoryImage: "",
-    linkImage: "",
+    linkImage: null,
   });
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const dispatch = useDispatch();
 
   // gọi dữ liệu bảng images
-  const fetchAllImages = async () => {
+  // const fetchAllImages = async () => {
+  //   try {
+  //     const response = await ImageAPI.getAllImages();
+  //     setAllImages(response.data);
+  //   } catch (error) {
+  //     console.error("Error retrieving data: ", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchAllImages();
+  // }, []);
+
+  const handleClose = () => props.setShow(false);
+  const handleFormSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    const dataFromPost = dataForm;
+    if (!selectedFile) {
+      alert("Vui lòng chọn một tệp ảnh để tải lên");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("linkImage", selectedFile);
+    formData.append("userCreateId", userLogin?.id);
+    formData.append("categoryImage", dataFromPost.categoryImage);
+    formData.append("titleImage", dataFromPost.titleImage);
+    formData.append("description", dataFromPost.description);
+    formData.append("sourceImage", dataFromPost.sourceImage);
+
     try {
-      const response = await ImageAPI.getAllImages();
-      setAllImages(response.data.data);
+      await ImageAPI.postImage(formData);
+      dispatch(updateName());
+      // fetchAllImages();
+      props.setShow(false);
     } catch (error) {
       console.error("Error retrieving data: ", error);
     }
-  };
 
-  useEffect(() => {
-    fetchAllImages();
-  }, []);
-
-  // const idNewImage =
-  //   Number(allImages[allImages.length - 1]?.idImage) + 1;
-
-  const handleClose = () => props.setShow(false);
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const dataFromPost = dataForm;
-    dataFromPost.linkImage = imgServer;
-    console.log(dataFromPost);
-
-    const newImage = {
-      userCreateId: userLogin?.idUser,
-      linkImage: dataFromPost.linkImage,
-      categoryImage: dataFromPost.categoryImage,
-      titleImage: dataFromPost.titleImage,
-      description: dataFromPost.description,
-      sourceImage: dataFromPost.sourceImage,
-    };
-
-    axiosClient
-      .post("/api/v1/upload-image", newImage)
-      .then((response) => {
-        console.log(response.data);
-        // fetchDataImage();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    fetchAllImages();
-    props.setShow(false);
     // navigate(`/detail/${idNewImage}`);
   };
 
@@ -87,24 +85,7 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
   const handleImageChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    axiosClient({
-      method: "POST",
-      url: "/api/v1/upload-one",
-      data: { uploadImage: file },
-      headers: {
-        "Content-Type": "multipart/form-data; ",
-      },
-    })
-      .then((data) => {
-        console.log("Người tạo thêm ảnh", data);
-        setImgServer(data.data.image);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    setSelectedFile(event.target.files?.[0]);
   };
 
   return (
@@ -118,10 +99,7 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
         <Modal.Body>
           <Form onSubmit={handleFormSubmit} id="id-form">
             {/* ... (Form Group components) ... */}
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlInput1"
-            >
+            <Form.Group className="mb-3" controlId="categoryImage">
               <Form.Control
                 type="text"
                 placeholder="Thể loại ảnh"
@@ -132,10 +110,7 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
               />
             </Form.Group>
 
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlInput1"
-            >
+            <Form.Group className="mb-3" controlId="titleImage">
               <Form.Control
                 type="text"
                 placeholder="Nhập tiêu đề ảnh"
@@ -145,10 +120,7 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
                 value={dataForm?.titleImage}
               />
             </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
+            <Form.Group className="mb-3" controlId="description">
               <Form.Control
                 as="textarea"
                 placeholder="Mô tả ảnh"
@@ -158,10 +130,7 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
                 value={dataForm?.description}
               />
             </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
+            <Form.Group className="mb-3" controlId="sourceImage">
               <Form.Control
                 type="text"
                 placeholder="Nhập nguồn gốc ảnh"
@@ -171,10 +140,7 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
                 value={dataForm?.sourceImage}
               />
             </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
+            <Form.Group className="mb-3" controlId="linkImage">
               <Form.Control
                 type="file"
                 placeholder="Chọn file ảnh"

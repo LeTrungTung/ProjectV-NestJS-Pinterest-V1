@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import { useNavigate } from "react-router-dom";
 import { UserAPI } from "../../api/User";
 import { useDispatch } from "react-redux";
 import { updateName } from "../../store/editNameSlice";
 import "./ModalFormRename.css";
-import axiosClient from "../../api/axiosClient";
 
 interface ModalFormChangeAvatarProps {
   show: boolean;
@@ -19,12 +17,8 @@ const ModalFormChangeAvatar: React.FC<ModalFormChangeAvatarProps> = (
 ) => {
   const userLogin =
     JSON.parse(localStorage.getItem("userLogin")) || [];
-  const [imgServer, setImgServer] = useState<string>("");
-  // const [dataForm, setDataForm] = useState<{ avatarUser: string }>({
-  //   avatarUser: "",
-  // });
+  const [selectedFile, setSelectedFile] = useState<any>(null);
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleClose = () => props.setShow(false);
@@ -32,15 +26,18 @@ const ModalFormChangeAvatar: React.FC<ModalFormChangeAvatarProps> = (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-    // const dataFromPost = dataForm;
 
-    const newAvatar = {
-      avatarUser: imgServer,
-    };
-    const id = userLogin?.idUser;
-    console.log("idusserlogin", id);
+    if (!selectedFile) {
+      alert("Vui lòng chọn một tệp ảnh để tải lên");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("avatar", selectedFile);
+
+    const id = userLogin?.id;
     try {
-      await UserAPI.editAvatar(id, newAvatar);
+      await UserAPI.editAvatar(id, formData);
       dispatch(updateName());
     } catch (error) {
       console.error("Error retrieving data: ", error);
@@ -48,37 +45,10 @@ const ModalFormChangeAvatar: React.FC<ModalFormChangeAvatarProps> = (
     props.setShow(false);
   };
 
-  // const handleInputChange = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const { name, value } = event.target;
-  //   setDataForm((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
-
   const handleImageChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    axiosClient({
-      method: "POST",
-      url: "/api/v1/upload-one",
-      data: { uploadImage: file },
-      headers: {
-        "Content-Type": "multipart/form-data; ",
-      },
-    })
-      .then((data) => {
-        console.log("Avatar đại diện", data);
-        setImgServer(data.data.image);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    setSelectedFile(event.target.files?.[0]);
   };
 
   return (

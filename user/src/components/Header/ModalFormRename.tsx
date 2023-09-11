@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import { useNavigate } from "react-router-dom";
 import { UserAPI } from "../../api/User";
 import { useDispatch } from "react-redux";
 import { updateName } from "../../store/editNameSlice";
@@ -20,7 +19,6 @@ const ModalFormRename: React.FC<ModalFormRenameProps> = (props) => {
     username: "",
   });
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleClose = () => props.setShow(false);
@@ -33,7 +31,7 @@ const ModalFormRename: React.FC<ModalFormRenameProps> = (props) => {
     const newUsername = {
       username: dataFromPost.username,
     };
-    const id = userLogin?.idUser;
+    const id = userLogin?.id;
     console.log("idusserlogin", id);
     try {
       await UserAPI.editUsername(id, newUsername);

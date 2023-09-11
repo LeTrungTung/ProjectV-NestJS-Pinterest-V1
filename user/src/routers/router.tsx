@@ -10,6 +10,7 @@ import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
 import ProfileLayout from "../layouts/ProfileLayout/ProfileLayout";
 import DetailImageLayout from "../layouts/DetailImageLayout/DetailImageLayout";
 import RequiredAuth from "../components/RequireAuth";
+import { useSelector } from "react-redux";
 
 export interface IDataImage {
   categoryImage: string;
@@ -24,6 +25,10 @@ export interface IDataImage {
 const Router: React.FC = () => {
   const [imageList, setImageList] = useState<Array<IDataImage>>([]);
   const [isCallImage, setIsCallImage] = useState(true);
+
+  // gọi lại state thay đổi tên username
+  const dataUpdate = useSelector((state: any) => state.editName);
+
   // gọi dữ liệu API images lấy toàn bộ ảnh
   useEffect(() => {
     const fetchDataImage = async () => {
@@ -40,7 +45,7 @@ const Router: React.FC = () => {
     return () => {
       setIsCallImage(false);
     };
-  }, [isCallImage]);
+  }, [isCallImage, dataUpdate]);
 
   console.log("imageList API====>", imageList);
 

@@ -3,8 +3,6 @@ import { Container } from "react-bootstrap";
 import { BsThreeDots } from "react-icons/bs";
 import { IoIosArrowDown } from "react-icons/io";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-// import { BsFillCaretRightSquareFill } from "react-icons/bs";
-// import { BsSuitHeart } from "react-icons/bs";
 import { MdOutlineSend } from "react-icons/md";
 import { BiSolidHappyHeartEyes } from "react-icons/bi";
 import { MdTagFaces } from "react-icons/md";
@@ -31,11 +29,9 @@ const DetailImage: React.FC = () => {
 
   const numberId = Number(paramsId.id);
   const [imageList, setImageList] = useState<ImageComment[]>([]);
-  const [imageChoice, setImageChoice] = useState<ImageChoice[]>([]);
+  const [imageChoice, setImageChoice] = useState<any>();
   const [userList, setUserList] = useState<IDataUser[]>([]);
-  const [repCommentList, setRepCommentList] = useState<IRepComment[]>(
-    []
-  );
+
   const [loveCommentList, setLoveCommentList] = useState<
     ILikeLoveComment[]
   >([]);
@@ -61,7 +57,7 @@ const DetailImage: React.FC = () => {
   const [usersCreateImage, setUsersCreateImage] = useState<
     IDataUser[]
   >([]);
-  const [userFollowed, setUserFollowed] = useState([]);
+  const [userFollowed, setUserFollowed] = useState<any>([]);
   const [imageSaved, setImageSaved] = useState<ISaveImage[]>([]);
   const [likeLoveComment, setLikeLoveComment] = useState<
     ILikeLoveComment[]
@@ -85,7 +81,7 @@ const DetailImage: React.FC = () => {
   const fetchImageSaved = async () => {
     try {
       const response = await ImageAPI.getImageSaved();
-      setImageSaved(response.data.data);
+      setImageSaved(response.data);
     } catch (error) {
       console.error("Error retrieving data: ", error);
     }
@@ -96,7 +92,7 @@ const DetailImage: React.FC = () => {
   const checkImgSaved = imageSaved?.filter(
     (item) =>
       item.imageSavedId === numberId &&
-      item.userSavedId === userLogin?.idUser
+      item.userSavedId === userLogin?.id
   );
   if (checkImgSaved?.length > 0) {
     imageStoreSaved = true;
@@ -105,7 +101,8 @@ const DetailImage: React.FC = () => {
   const fetchUserJoinImage = async (id: number) => {
     try {
       const response1 = await ImageAPI.getImageCreatedUser(id);
-      setUsersCreateImage(response1.data.data);
+      setUsersCreateImage(response1.data);
+      console.log("UsersCreateImage11", response1.data);
     } catch (error) {
       console.error("Error retrieving data: ", error);
     }
@@ -119,14 +116,15 @@ const DetailImage: React.FC = () => {
       setIsCallImage(false);
     };
   }, [isCallImage]);
-  const idUserCreate = usersCreateImage[0]?.idUser;
+  console.log("usersCreateImage", usersCreateImage);
+  const idUserCreate = usersCreateImage[0]?.user?.id;
 
   // gọi dữ liệu API lấy image by Id
   useEffect(() => {
     const fetchImageById = async (id: number) => {
       try {
         const response = await ImageAPI.getImageById(id);
-        setImageChoice(response.data.data);
+        setImageChoice(response.data);
       } catch (error) {
         console.error("Error retrieving data: ", error);
       }
@@ -146,7 +144,7 @@ const DetailImage: React.FC = () => {
     const fetchDataUser = async () => {
       try {
         const response = await UserAPI.getUsers();
-        setUserList(response.data.data);
+        setUserList(response.data);
       } catch (error) {
         console.error("Error retrieving data: ", error);
       }
@@ -160,13 +158,14 @@ const DetailImage: React.FC = () => {
   }, [isCallUser]);
 
   const userOnLogin = userList.find(
-    (item) => item.idUser === userLogin?.idUser
+    (item) => item.id === userLogin?.id
   );
   // gọi dữ liệu API images
   const fetchDataImage = async () => {
     try {
       const response = await ImageAPI.getAllImages_Comments();
-      setImageList(response.data.data);
+      console.log("ImageList", response.data);
+      setImageList(response.data);
     } catch (error) {
       console.error("Error retrieving data: ", error);
     }
@@ -178,11 +177,8 @@ const DetailImage: React.FC = () => {
   const fetchUserFollowed = async (id: number) => {
     try {
       const response3 = await FollowAPI.getUserFollowed(id);
-      // const response1 = await FollowAPI.getUserFolloweOther(id);
-      setUserFollowed(response3.data.data);
-      console.log("object6666", response3);
-
-      // setUserFollowOther(response1.data.data);
+      setUserFollowed(response3.data);
+      console.log("object6666", response3.data);
     } catch (error) {
       console.error("Error retrieving data: ", error);
     }
@@ -192,29 +188,30 @@ const DetailImage: React.FC = () => {
     fetchUserFollowed(idUserCreate);
   }, [idUserCreate]);
 
-  const fetchAllRepComment = async () => {
-    try {
-      const response = await CommentAPI.getAllRepComment();
-      setRepCommentList(response.data.data);
-      console.log("object77", response.data.data);
-    } catch (error) {
-      console.error("Error retrieving data: ", error);
-    }
-  };
-  useEffect(() => {
-    fetchAllRepComment();
-  }, []);
+  // const fetchAllRepComment = async () => {
+  //   try {
+  //     const response = await CommentAPI.getAllRepComment();
+  //     setRepCommentList(response.data.data);
+  //     console.log("object77", response.data.data);
+  //   } catch (error) {
+  //     console.error("Error retrieving data: ", error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchAllRepComment();
+  // }, []);
 
   const commentList = imageList.filter(
     (Comment) => Comment.imageCommentId === numberId
   );
+  console.log("commentList", commentList);
 
-  const dataRepCommentList = commentList?.map((comment) => {
-    const matchingRep = repCommentList.filter(
-      (item) => item.commentRepId === comment.idComment
-    );
-    return matchingRep.map((item) => item);
-  });
+  // const dataRepCommentList = commentList?.map((comment) => {
+  //   const matchingRep = repCommentList.filter(
+  //     (item) => item.commentRepId === comment.idComment
+  //   );
+  //   return matchingRep.map((item) => item);
+  // });
 
   // gọi dữ liệu API Comment lấy số lượt yêu thích "Love", "Like"
   const fetchDataComment = async () => {
@@ -222,9 +219,10 @@ const DetailImage: React.FC = () => {
       const response1 = await CommentAPI.getLoveComments();
       const response2 = await CommentAPI.getLikeComments();
       const response3 = await CommentAPI.getAllComments();
-      setLoveCommentList(response1.data.data);
-      setLikeCommentList(response2.data.data);
-      setAllCommentList(response3.data.data);
+      console.log("LoveCommentList", response1.data);
+      setLoveCommentList(response1.data);
+      setLikeCommentList(response2.data);
+      setAllCommentList(response3.data);
     } catch (error) {
       console.error("Error retrieving data: ", error);
     }
@@ -244,8 +242,8 @@ const DetailImage: React.FC = () => {
     const fetchDataFollow = async () => {
       try {
         const response = await FollowAPI.getAllFollow_User();
-        console.log("followUser====>", response.data.data);
-        setFollowUserList(response.data.data);
+        console.log("followUser====>", response.data);
+        setFollowUserList(response.data);
       } catch (error) {
         console.error("Error retrieving data: ", error);
       }
@@ -262,10 +260,10 @@ const DetailImage: React.FC = () => {
     try {
       const response1 = await ImageAPI.getAllImages_Love();
       const response2 = await ImageAPI.getAllImages_Like();
-      console.log("Love Image====>", response1.data.data);
-      console.log("Like Image====>", response2.data.data);
-      setLoveImageList(response1.data.data);
-      setLikeImageList(response2.data.data);
+      console.log("Love Image====>", response1.data);
+      console.log("Like Image====>", response2.data);
+      setLoveImageList(response1.data);
+      setLikeImageList(response2.data);
     } catch (error) {
       console.error("Error retrieving data: ", error);
     }
@@ -281,10 +279,10 @@ const DetailImage: React.FC = () => {
   }, [isOperation]);
 
   const arrLoveByImage = loveImageList.filter(
-    (item) => item.idImage === numberId
+    (item) => item?.imageOperationId === numberId
   );
   const arrLikeByImage = likeImageList.filter(
-    (item) => item.idImage === numberId
+    (item) => item?.imageOperationId === numberId
   );
   console.log("arrLoveImage===>", arrLoveByImage);
   console.log("arrLikeImage===>", arrLikeByImage);
@@ -295,29 +293,29 @@ const DetailImage: React.FC = () => {
   const countLikeLoveImage = countLikeImage + countLoveImage;
 
   // tìm idUser đã tạo ra ảnh đang xem
-  const findUserCreateImage = followUserList.find(
-    (item) => item.idImage == numberId
-  );
-  // đếm số lượt được follow của user này
-  const countFollowUser = followUserList.filter(
-    (item) => item.idUser === findUserCreateImage?.idUser
-  ).length;
+  // const findUserCreateImage = followUserList.find(
+  //   (item) => item.id == numberId
+  // );
+  // // đếm số lượt được follow của user này
+  // const countFollowUser = followUserList.filter(
+  //   (item) => item.id === findUserCreateImage?.id
+  // ).length;
 
-  const imageViewDetail = imageList.find(
-    (image) => image.idImage === numberId
+  const imageViewDetail: any = imageList.find(
+    (item) => item.image.id === numberId
   );
   const [comment, setComment] = useState("");
   // Đếm số lượng Love của từng comment trong commentList
-  const loveByCommentList = commentList?.map(
-    (comment) =>
-      loveCommentList?.filter(
-        (love) => love.idComment == comment.idComment
-      ).length
-  );
-  // tạo ra mảng gồm danh sách các user thích comment đang tương tác
-  const arrUserloveComment = commentList?.map((comment) =>
+  const loveByCommentList: any = commentList?.map((comment) =>
     loveCommentList?.filter(
-      (item) => item.idComment === comment.idComment
+      (item) => item?.commentLikeLoveId === comment.idComment
+    )
+  );
+  console.log("loveByCommentList", loveByCommentList);
+  // tạo ra mảng gồm danh sách các user thích comment đang tương tác
+  const arrUserloveComment: any = commentList?.map((comment) =>
+    loveCommentList?.filter(
+      (item) => item?.commentLikeLoveId === comment.idComment
     )
   );
   console.log("Arr user love comment", arrUserloveComment);
@@ -331,10 +329,11 @@ const DetailImage: React.FC = () => {
   const handleAddComment = async () => {
     if (comment.trim() !== "") {
       const newComment = {
-        imageCommentId: imageChoice[0].idImage,
-        userCommentId: userLogin?.idUser,
+        imageCommentId: imageChoice?.id,
+        userCommentId: userLogin?.id,
         content: comment,
         timecreate: new Date().toISOString().split("T")[0],
+        parentCommentId: null,
       };
 
       await CommentAPI.postComment(newComment)
@@ -357,14 +356,14 @@ const DetailImage: React.FC = () => {
   );
   // đếm số lượng tim yêu thích của từng comment
   const handleHeartClick = async (id: number) => {
-    const commentHeart = imageList?.find(
-      (imageJoinComment) => imageJoinComment.idComment === id
-    );
+    // const commentHeart = imageList?.find(
+    //   (imageJoinComment) => imageJoinComment.idComment === id
+    // );
     // gọi bảng like_love_comment về
     const fetchLikeLoveComment = async () => {
       try {
         const response = await CommentAPI.getLikeLoveComments();
-        setLikeLoveComment(response.data.data);
+        setLikeLoveComment(response.data);
       } catch (error) {
         console.error("Error retrieving data: ", error);
       }
@@ -375,7 +374,7 @@ const DetailImage: React.FC = () => {
     const findComment = likeLoveComment?.filter(
       (item) =>
         item.commentLikeLoveId === id &&
-        item.userLoveCommentId === userLogin?.idUser
+        item.userLoveCommentId === userLogin?.id
     );
     if (findComment?.length > 0) {
       const handleDeleteLikeAtComment = async (id: number) => {
@@ -394,7 +393,7 @@ const DetailImage: React.FC = () => {
       const newLikeComment = {
         commentLikeLoveId: id,
         userLikeCommentId: null,
-        userLoveCommentId: userLogin?.idUser,
+        userLoveCommentId: userLogin?.id,
       };
       await CommentAPI.postLikeAtComment(newLikeComment)
         .then((response) => {
@@ -418,7 +417,7 @@ const DetailImage: React.FC = () => {
     if (!imageStoreSaved) {
       const newSaveImg = {
         imageSavedId: numberId,
-        userSavedId: Number(userLogin?.idUser),
+        userSavedId: Number(userLogin?.id),
       };
       await ImageAPI.postImageSaved(newSaveImg)
         .then((response) => {
@@ -432,7 +431,7 @@ const DetailImage: React.FC = () => {
       const findArrSaveImage = imageSaved.find(
         (item) =>
           item.imageSavedId === numberId &&
-          item.userSavedId === userLogin?.idUser
+          item.userSavedId === userLogin?.id
       );
       const findIdSaveImage = findArrSaveImage?.idSaveImage;
       console.log(555555555555, findIdSaveImage);
@@ -464,7 +463,7 @@ const DetailImage: React.FC = () => {
   const fetchOperationImage = async () => {
     try {
       const response = await ImageAPI.getOperationImage();
-      setOperationImage(response.data.data);
+      setOperationImage(response.data);
     } catch (error) {
       console.error("Error get OperationImage:", error);
     }
@@ -478,12 +477,12 @@ const DetailImage: React.FC = () => {
     let findArrLoveImage = operationImage?.filter(
       (item) =>
         item.imageOperationId == numberId &&
-        item.userLoveImageId == userLogin?.idUser
+        item.userLoveImageId == userLogin?.id
     );
     let findArrLikeImage = operationImage?.filter(
       (item) =>
         item.imageOperationId == numberId &&
-        item.userLikeImageId == userLogin?.idUser
+        item.userLikeImageId == userLogin?.id
     );
     if (icon == "heart") {
       setChooseIcon(<BiSolidHappyHeartEyes />);
@@ -509,8 +508,8 @@ const DetailImage: React.FC = () => {
         const newLoveImage = {
           imageOperationId: numberId,
           userLikeImageId: null,
-          userLoveImageId: userLogin?.idUser,
-          userSavedImageId: null,
+          userLoveImageId: userLogin?.id,
+          // userSavedImageId: null,
         };
         const handlePostLoveImage = async (
           newLoveImage: ILikeLoveImage
@@ -519,7 +518,7 @@ const DetailImage: React.FC = () => {
             const response2 = await ImageAPI.postLoveImage(
               newLoveImage
             );
-            console.log("response Post", response2.data.data);
+            console.log("response Post", response2.data);
             fetchLoveImage();
           } catch (error) {
             console.error("Error retrieving data: ", error);
@@ -553,9 +552,9 @@ const DetailImage: React.FC = () => {
       else {
         const newLikeImage = {
           imageOperationId: numberId,
-          userLikeImageId: userLogin?.idUser,
+          userLikeImageId: userLogin?.id,
           userLoveImageId: null,
-          userSavedImageId: null,
+          // userSavedImageId: null,
         };
         const handlePostLikeImage = async (
           newLikeImage: ILikeLoveImage
@@ -564,7 +563,7 @@ const DetailImage: React.FC = () => {
             const response2 = await ImageAPI.postLoveImage(
               newLikeImage
             );
-            console.log("response Post", response2.data.data);
+            console.log("response Post", response2.data);
             fetchLoveImage();
           } catch (error) {
             console.error("Error retrieving data: ", error);
@@ -604,23 +603,27 @@ const DetailImage: React.FC = () => {
   const fetchUserFollowOther = async (id: number) => {
     try {
       const response = await FollowAPI.getUserFolloweOther(id);
-      setUserFollowOthers(response.data.data);
+      setUserFollowOthers(response.data);
     } catch (error) {
       console.error("Error retrieving data: ", error);
     }
   };
   useEffect(() => {
-    // fetchUserFollowOther(usersCreateImage[0]?.idUser);
-    fetchUserFollowOther(userLogin?.idUser);
+    fetchUserFollowOther(userLogin?.id);
   }, []);
 
   userFollowOthers.filter(
-    (item) => item.userFollowedbyId === usersCreateImage[0]?.idUser
+    (item) =>
+      item.userFollowOthers.userFollowedbyId ===
+      usersCreateImage[0]?.id
   );
 
-  const ListFollowedbyUserLogin = userFollowOthers.filter(
-    (item) => item.userFollowedbyId === usersCreateImage[0]?.idUser
-  );
+  // const ListFollowedbyUserLogin = userFollowOthers.filter(
+  //   (item) => item.userFollowedbyId === usersCreateImage[0]?.id
+  // );
+  const ListFollowedbyUserLogin =
+    userFollowOthers[0]?.userFollowOthers || [];
+  console.log("ListFollowedbyUserLogin", ListFollowedbyUserLogin);
   const handleFollowUserCreatedImg = () => {
     if (ListFollowedbyUserLogin.length > 0) {
       // Bỏ theo dõi
@@ -634,15 +637,15 @@ const DetailImage: React.FC = () => {
       if (typeof ListFollowedbyUserLogin[0].idFollow === "number") {
         deleteFollowed(ListFollowedbyUserLogin[0].idFollow);
       }
-      fetchUserFollowOther(userLogin?.idUser);
+      fetchUserFollowOther(userLogin?.id);
       fetchUserFollowed(idUserCreate);
       setStatusFollow(!statusFollow);
     }
     // add theo theo dõi vào bảng follows
     else {
       const newFollow = {
-        userFollowedbyId: usersCreateImage[0]?.idUser,
-        userFollowOtherId: Number(userLogin?.idUser),
+        userFollowedbyId: usersCreateImage[0]?.user.id,
+        userFollowOtherId: Number(userLogin?.id),
       };
       const handleAddFolowed = async (newFollow: IFollow) => {
         try {
@@ -652,7 +655,7 @@ const DetailImage: React.FC = () => {
         }
       };
       handleAddFolowed(newFollow);
-      fetchUserFollowOther(userLogin?.idUser);
+      fetchUserFollowOther(userLogin?.id);
       fetchUserFollowed(idUserCreate);
       setStatusFollow(!statusFollow);
     }
@@ -663,50 +666,50 @@ const DetailImage: React.FC = () => {
   };
 
   // --------------Trả lời comment --------------------
-  const [replyId, setReplyId] = useState<number | null>(null);
-  const [contentRepComment, setContentRepComment] =
-    useState<string>("");
+  // const [replyId, setReplyId] = useState<number | null>(null);
+  // const [contentRepComment, setContentRepComment] =
+  //   useState<string>("");
 
-  const handleShowAns = (commentId: number) => {
-    setReplyId(commentId);
-  };
+  // const handleShowAns = (commentId: number) => {
+  //   setReplyId(commentId);
+  // };
 
-  const handleReplyChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setContentRepComment(event.target.value);
-  };
+  // const handleReplyChange = (
+  //   event: React.ChangeEvent<HTMLTextAreaElement>
+  // ) => {
+  //   setContentRepComment(event.target.value);
+  // };
 
-  const handleAddRepComment = async () => {
-    if (contentRepComment.trim() !== "") {
-      const newRepComment = {
-        commentRepId: replyId,
-        userRepCommentId: userOnLogin?.idUser,
-        contentRepComment: contentRepComment,
-        timecreateRep: new Date().toISOString().split("T")[0],
-      };
-      await CommentAPI.postRepComment(newRepComment)
-        .then((response) => {
-          console.log("RepComment sent successfully:", response.data);
-          // update lại dữ liệu từ DB
-          // ------------------------------------?
-          fetchDataImage();
-          fetchAllRepComment();
-          setContentRepComment("");
-          setReplyId(null);
-        })
-        .catch((error) => {
-          // Xử lý khi gửi bình luận gặp lỗi
-          console.error("Error sending comment:", error);
-        });
-    }
-  };
+  // const handleAddRepComment = async () => {
+  //   if (contentRepComment.trim() !== "") {
+  //     const newRepComment = {
+  //       commentRepId: replyId,
+  //       userRepCommentId: userOnLogin?.idUser,
+  //       contentRepComment: contentRepComment,
+  //       timecreateRep: new Date().toISOString().split("T")[0],
+  //     };
+  //     await CommentAPI.postRepComment(newRepComment)
+  //       .then((response) => {
+  //         console.log("RepComment sent successfully:", response.data);
+  //         // update lại dữ liệu từ DB
+  //         // ------------------------------------?
+  //         fetchDataImage();
+  //         fetchAllRepComment();
+  //         setContentRepComment("");
+  //         setReplyId(null);
+  //       })
+  //       .catch((error) => {
+  //         // Xử lý khi gửi bình luận gặp lỗi
+  //         console.error("Error sending comment:", error);
+  //       });
+  //   }
+  // };
 
   return (
     <Container id="wrap-detail">
       <div id="left-area">
         <img
-          src={imageChoice[0]?.linkImage}
+          src={imageChoice?.linkImage}
           alt="detail image"
           id="img-detail"
         />
@@ -736,7 +739,7 @@ const DetailImage: React.FC = () => {
           <div id="userCreate-follow">
             <div id="userCreate-follow-left">
               <div id="avatar-create-img">
-                <img src={usersCreateImage[0]?.avatarUser} alt="" />
+                <img src={usersCreateImage[0]?.user.avatar} alt="" />
               </div>
               <div id="username-count-follow">
                 <span
@@ -745,7 +748,10 @@ const DetailImage: React.FC = () => {
                 >
                   {usersCreateImage[0]?.username}
                 </span>
-                <span>{userFollowed?.length} người theo dõi</span>
+                <span>
+                  {userFollowed[0]?.userFollowedbys?.length} người
+                  theo dõi
+                </span>
               </div>
             </div>
             <div id="userCreate-follow-right">
@@ -763,11 +769,15 @@ const DetailImage: React.FC = () => {
             </div>
           </div>
           <p id="id-source-img">
-            <u>{imageViewDetail?.sourceImage}</u>
+            <u>{imageViewDetail?.image.sourceImage}</u>
           </p>
 
-          <h5 id="id-title-image">{imageViewDetail?.titleImage}</h5>
-          <p id="id-descrip-img">{imageViewDetail?.description}</p>
+          <h5 id="id-title-image">
+            {imageViewDetail?.image.titleImage}
+          </h5>
+          <p id="id-descrip-img">
+            {imageViewDetail?.image.description}
+          </p>
           <br />
           <p id="id-count-comment">
             <h5>
@@ -782,20 +792,18 @@ const DetailImage: React.FC = () => {
                 return (
                   <div className="show-comment" key={index}>
                     <div className="avatar-comment">
-                      {comment.avatarUser == null ? (
+                      {comment.user.avatar == null ? (
                         <img
                           src="https://cdn.onlinewebfonts.com/svg/img_542942.png"
                           alt="avatar"
                         />
                       ) : (
-                        <img src={comment.avatarUser} alt="avatar" />
+                        <img src={comment.user.avatar} alt="avatar" />
                       )}
-
-                      {/* <img src={comment.avatarUser} alt="" /> */}
                     </div>
                     <div className="view-comment">
                       <div>
-                        <b>{comment.username}</b>
+                        <b>{comment.user.username}</b>
                         <span className="content-comment">
                           {comment.content}
                         </span>
@@ -804,23 +812,23 @@ const DetailImage: React.FC = () => {
                         <span>{comment.timecreate.slice(0, 10)}</span>
                         <span
                           className="ans-comment"
-                          onClick={() =>
-                            handleShowAns(comment.idComment)
-                          }
+                          // onClick={() =>
+                          //   handleShowAns(comment.idComment)
+                          // }
                         >
                           Trả lời
                         </span>
 
                         <span className="ans-heart">
                           {/* đếm số lượt yêu thích */}
-                          {loveByCommentList[index] > 0 ? (
+                          {loveByCommentList[index].length > 0 ? (
                             <AiFillHeart
                               id="id-heart"
                               onClick={() =>
                                 handleHeartClick(comment.idComment)
                               }
                               className={
-                                loveByCommentList[index] > 0
+                                loveByCommentList[index].length > 0
                                   ? "active"
                                   : ""
                               }
@@ -838,30 +846,37 @@ const DetailImage: React.FC = () => {
                           <div id="wrap-love-comment">
                             <span id="count-love-coment">
                               {" "}
-                              {loveByCommentList[index] > 0
-                                ? loveByCommentList[index]
+                              {loveByCommentList[index].length > 0
+                                ? loveByCommentList[index].length
                                 : ""}
                             </span>
                             <div className="show-user-love">
-                              {loveByCommentList[index] > 0 &&
-                                arrUserloveComment[index]?.map(
-                                  (userlove) => {
+                              {loveByCommentList[index].length > 0 &&
+                                loveByCommentList[index]?.map(
+                                  (userlove: any) => {
                                     return (
                                       <div
                                         className="row-mini-love"
-                                        key={userlove.idComment}
+                                        key={
+                                          userlove.commentLikeLoveId
+                                        }
                                       >
                                         <div>
                                           <span>
                                             <img
                                               src={
-                                                userlove.avatarUser
+                                                userlove
+                                                  .userLoveComment
+                                                  .avatar
                                               }
                                               alt=""
                                             />
                                           </span>
                                           <span className="name-uselove">
-                                            {userlove.username}
+                                            {
+                                              userlove.userLoveComment
+                                                .username
+                                            }
                                           </span>
                                         </div>
                                         <div>
@@ -881,69 +896,27 @@ const DetailImage: React.FC = () => {
                         </span>
                       </div>
                       {/* Hiển thị danh sách trả lời */}
-                      {dataRepCommentList[index].map((repitem) => (
-                        <div key={repitem.idRepComment}>
-                          <div className="show-comment-repply">
-                            <div className="avatar-comment">
-                              {repitem.avatarUser == null ? (
-                                <img
-                                  src="https://cdn.onlinewebfonts.com/svg/img_542942.png"
-                                  alt="avatar"
-                                />
-                              ) : (
-                                <img
-                                  src={repitem.avatarUser}
-                                  alt="avatar"
-                                />
-                              )}
-                            </div>
-                            <div className="view-comment">
-                              <div>
-                                <b>{repitem.username} </b>
-                                <span className="content-comment">
-                                  {repitem.contentRepComment}
-                                </span>
-                              </div>
-                              <div className="action-comment">
-                                <span>
-                                  {repitem.timecreateRep.slice(0, 10)}
-                                </span>
-                                <span
-                                  className="ans-comment"
-                                  onClick={() =>
-                                    handleShowAns(comment.idComment)
-                                  }
-                                >
-                                  Trả lời
-                                </span>
-
-                                {/* <span id="count-love-coment1">
-                                    
-                                  </span> */}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
 
                       {/* Hiển thị textarea để nhập nội dung trả lời */}
-                      {replyId === comment.idComment && (
-                        <div className="reply-textarea">
-                          <textarea
-                            rows={2}
-                            placeholder="Nhập nội dung trả lời..."
-                            value={contentRepComment}
-                            onChange={handleReplyChange}
-                            className="add-repcomment"
-                          />
-                          <button
-                            onClick={handleAddRepComment}
-                            className="save-rep-comment"
-                          >
-                            Lưu
-                          </button>
-                        </div>
-                      )}
+                      {
+                        // replyId === comment.idComment && (
+                        //   <div className="reply-textarea">
+                        //     <textarea
+                        //       rows={2}
+                        //       placeholder="Nhập nội dung trả lời..."
+                        //       value={contentRepComment}
+                        //       onChange={handleReplyChange}
+                        //       className="add-repcomment"
+                        //     />
+                        //     <button
+                        //       onClick={handleAddRepComment}
+                        //       className="save-rep-comment"
+                        //     >
+                        //       Lưu
+                        //     </button>
+                        //   </div>
+                        // )
+                      }
                     </div>
                   </div>
                 );
@@ -987,18 +960,24 @@ const DetailImage: React.FC = () => {
                           {arrLoveByImage?.map((userLoveImage) => {
                             return (
                               <div
-                                key={userLoveImage.idImage}
+                                key={userLoveImage.idOperationImage}
                                 className="wrap-row"
                               >
                                 <div className="avatar-name">
                                   <span>
                                     <img
-                                      src={userLoveImage.avatarUser}
+                                      src={
+                                        userLoveImage.userLoveImage
+                                          .avatar
+                                      }
                                       alt=""
                                     />
                                   </span>
                                   <span className="cl-nameuser">
-                                    {userLoveImage.username}
+                                    {
+                                      userLoveImage.userLoveImage
+                                        .username
+                                    }
                                   </span>
                                 </div>
                                 <div>
@@ -1010,18 +989,24 @@ const DetailImage: React.FC = () => {
                           {arrLikeByImage?.map((userLikeImage) => {
                             return (
                               <div
-                                key={userLikeImage.idImage}
+                                key={userLikeImage.idOperationImage}
                                 className="wrap-row"
                               >
                                 <div className="avatar-name">
                                   <span>
                                     <img
-                                      src={userLikeImage.avatarUser}
+                                      src={
+                                        userLikeImage.userLikeImage
+                                          .avatar
+                                      }
                                       alt=""
                                     />
                                   </span>
                                   <span className="cl-nameuser">
-                                    {userLikeImage.username}
+                                    {
+                                      userLikeImage.userLikeImage
+                                        .username
+                                    }
                                   </span>
                                 </div>
                                 <div>
@@ -1058,7 +1043,7 @@ const DetailImage: React.FC = () => {
             </div>
           </div>
           <div id="bottom-comment">
-            {userOnLogin?.avatarUser == null ? (
+            {userOnLogin?.avatar == null ? (
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNL_ZnOTpXSvhf1UaK7beHey2BX42U6solRA&usqp=CAU"
                 alt="avatar"
@@ -1066,7 +1051,7 @@ const DetailImage: React.FC = () => {
               />
             ) : (
               <img
-                src={userOnLogin?.avatarUser}
+                src={userOnLogin?.avatar}
                 alt="avatar"
                 id="avatar-comment"
               />
