@@ -47,6 +47,7 @@ const DetailImage: React.FC = () => {
   const [likeImageList, setLikeImageList] = useState<
     IOperationImage[]
   >([]);
+
   const [allCommentList, setAllCommentList] = useState([]);
   const [isCallUser, setIsCallUser] = useState(true);
   const [isComment, setIsComment] = useState(true);
@@ -75,13 +76,23 @@ const DetailImage: React.FC = () => {
   const navigate = useNavigate();
 
   // let idUserCreate = "";
-  let imageStoreSaved = false;
+  const [imageStoreSaved, setImageStoreSaved] = useState(false);
 
   // gọi dữ liệu bảng images_saved_user
   const fetchImageSaved = async () => {
     try {
       const response = await ImageAPI.getImageSaved();
       setImageSaved(response.data);
+      const checkImgSaved = response.data?.filter(
+        (item: any) =>
+          item.imageSavedId === numberId &&
+          item.userSavedId === userLogin?.id
+      );
+      if (checkImgSaved?.length > 0) {
+        setImageStoreSaved(true);
+      } else {
+        setImageStoreSaved(false);
+      }
     } catch (error) {
       console.error("Error retrieving data: ", error);
     }
@@ -89,14 +100,6 @@ const DetailImage: React.FC = () => {
   useEffect(() => {
     fetchImageSaved();
   }, []);
-  const checkImgSaved = imageSaved?.filter(
-    (item) =>
-      item.imageSavedId === numberId &&
-      item.userSavedId === userLogin?.id
-  );
-  if (checkImgSaved?.length > 0) {
-    imageStoreSaved = true;
-  }
 
   const fetchUserJoinImage = async (id: number) => {
     try {
@@ -354,61 +357,53 @@ const DetailImage: React.FC = () => {
   const countComments = imageList?.filter(
     (imageJoinComment) => imageJoinComment.imageCommentId === numberId
   );
+
   // đếm số lượng tim yêu thích của từng comment
   const handleHeartClick = async (id: number) => {
-    // const commentHeart = imageList?.find(
-    //   (imageJoinComment) => imageJoinComment.idComment === id
-    // );
-    // gọi bảng like_love_comment về
-    const fetchLikeLoveComment = async () => {
-      try {
-        const response = await CommentAPI.getLikeLoveComments();
-        setLikeLoveComment(response.data);
-      } catch (error) {
-        console.error("Error retrieving data: ", error);
+    try {
+      const response = await CommentAPI.getLikeLoveComments();
+      const findComment = await response.data?.filter(
+        (item: any) =>
+          item.commentLikeLoveId === id &&
+          item.userLoveCommentId === userLogin?.id
+      );
+      if (findComment?.length > 0) {
+        const handleDeleteLikeAtComment = async (id: number) => {
+          try {
+            await CommentAPI.deleteLikeAtComment(id);
+            // Xoá thành công, tiến hành tải lại danh sách blog
+          } catch (error) {
+            console.error("Error deleting blog: ", error);
+          }
+        };
+        const idDeleteLike = findComment[0]?.idLikeLoveComment;
+        handleDeleteLikeAtComment(idDeleteLike);
+        // fetchDataImage();
+        fetchDataComment();
+      } else {
+        const newLikeComment = {
+          commentLikeLoveId: id,
+          userLikeCommentId: null,
+          userLoveCommentId: userLogin?.id,
+        };
+        CommentAPI.postLikeAtComment(newLikeComment)
+          .then((response) => {
+            console.log(
+              "like comment add successfully:",
+              response.data
+            );
+            // fetchDataImage();
+            fetchDataComment();
+          })
+          .catch((error) => {
+            // Xử lý khi gửi bình luận gặp lỗi
+            console.error("Error sending comment:", error);
+          });
       }
-    };
-
-    fetchLikeLoveComment();
-    console.log(66666, likeLoveComment);
-    const findComment = likeLoveComment?.filter(
-      (item) =>
-        item.commentLikeLoveId === id &&
-        item.userLoveCommentId === userLogin?.id
-    );
-    if (findComment?.length > 0) {
-      const handleDeleteLikeAtComment = async (id: number) => {
-        try {
-          await CommentAPI.deleteLikeAtComment(id);
-          // Xoá thành công, tiến hành tải lại danh sách blog
-        } catch (error) {
-          console.error("Error deleting blog: ", error);
-        }
-      };
-      const idDeleteLike = findComment[0]?.idLikeLoveComment;
-      handleDeleteLikeAtComment(idDeleteLike);
-      fetchDataComment();
-      fetchDataImage();
-    } else {
-      const newLikeComment = {
-        commentLikeLoveId: id,
-        userLikeCommentId: null,
-        userLoveCommentId: userLogin?.id,
-      };
-      await CommentAPI.postLikeAtComment(newLikeComment)
-        .then((response) => {
-          console.log(
-            "like comment add successfully:",
-            response.data
-          );
-          fetchDataComment();
-          fetchDataImage();
-        })
-        .catch((error) => {
-          // Xử lý khi gửi bình luận gặp lỗi
-          console.error("Error sending comment:", error);
-        });
+    } catch (error) {
+      console.error("Error retrieving data: ", error);
     }
+    fetchDataComment();
   };
   // kiểm tra ảnh đang xem đã được lưu chưa
   let isSaved = false;
@@ -427,6 +422,7 @@ const DetailImage: React.FC = () => {
         .catch((error) => {
           console.error("Error save iamge:", error);
         });
+      // fetchImageSaved();
     } else {
       const findArrSaveImage = imageSaved.find(
         (item) =>
@@ -440,25 +436,21 @@ const DetailImage: React.FC = () => {
         try {
           await ImageAPI.deleteImageById(id);
           // Xoá thành công, tiến hành tải lại danh sách blog
+          fetchImageSaved();
         } catch (error) {
           console.error("Error deleting blog: ", error);
         }
       };
       if (typeof findIdSaveImage === "number") {
         handleDeleteImage(findIdSaveImage);
+        fetchImageSaved();
       }
-      fetchImageSaved();
+      // fetchImageSaved();
     }
-
     // nếu ảnh chưa lưu thì add ảnh vào API, ngược lại thì không
-    if (!isSaved) {
-    }
+    fetchImageSaved();
   };
 
-  // Xử lý biểu tượng cảm xúc hình ảnh
-  const [chooseIcon, setChooseIcon] = useState<JSX.Element | null>(
-    null
-  );
   // lấy dư liệu bảng operation image
   const fetchOperationImage = async () => {
     try {
@@ -473,106 +465,142 @@ const DetailImage: React.FC = () => {
   }, []);
 
   const handleIconClick = async (icon: string) => {
-    // Xử lý khi người dùng chọn biểu tượng
-    let findArrLoveImage = operationImage?.filter(
-      (item) =>
-        item.imageOperationId == numberId &&
-        item.userLoveImageId == userLogin?.id
-    );
-    let findArrLikeImage = operationImage?.filter(
-      (item) =>
-        item.imageOperationId == numberId &&
-        item.userLikeImageId == userLogin?.id
-    );
-    if (icon == "heart") {
-      setChooseIcon(<BiSolidHappyHeartEyes />);
-      if (findArrLoveImage?.length > 0) {
-        // xoá love Image
-        const DeleteLoveImage = async (id: number) => {
-          try {
-            await ImageAPI.deleteLoveImage(id);
-            fetchLoveImage();
-          } catch (error) {
-            console.error("Error retrieving data: ", error);
+    const fetchOperationImage1 = async () => {
+      try {
+        const response = await ImageAPI.getOperationImage();
+        let findArrLoveImage = response.data?.filter(
+          (item: any) =>
+            item.imageOperationId == numberId &&
+            item.userLoveImageId == userLogin?.id
+        );
+        let findArrLikeImage = response.data?.filter(
+          (item: any) =>
+            item.imageOperationId == numberId &&
+            item.userLikeImageId == userLogin?.id
+        );
+        if (icon == "heart" && findArrLoveImage?.length > 0) {
+          // xoá love Image
+          const DeleteLoveImage = async (id: number) => {
+            try {
+              await ImageAPI.deleteLoveImage(id);
+              fetchLoveImage();
+            } catch (error) {
+              console.error("Error retrieving data: ", error);
+            }
+          };
+          if (
+            typeof findArrLoveImage[0]?.idOperationImage === "number"
+          ) {
+            DeleteLoveImage(findArrLoveImage[0]?.idOperationImage);
           }
-        };
-        if (
-          typeof findArrLoveImage[0]?.idOperationImage === "number"
-        ) {
-          DeleteLoveImage(findArrLoveImage[0]?.idOperationImage);
         }
-        fetchOperationImage();
-      }
-      //  nếu chưa có thì add love image vào
-      else {
-        const newLoveImage = {
-          imageOperationId: numberId,
-          userLikeImageId: null,
-          userLoveImageId: userLogin?.id,
-          // userSavedImageId: null,
-        };
-        const handlePostLoveImage = async (
-          newLoveImage: ILikeLoveImage
-        ) => {
-          try {
-            const response2 = await ImageAPI.postLoveImage(
-              newLoveImage
-            );
-            console.log("response Post", response2.data);
-            fetchLoveImage();
-          } catch (error) {
-            console.error("Error retrieving data: ", error);
+        if (icon == "thank" && findArrLikeImage?.length > 0) {
+          // xoá like Image
+          const DeleteLoveImage = async (id: number) => {
+            try {
+              await ImageAPI.deleteLoveImage(id);
+              fetchLoveImage();
+            } catch (error) {
+              console.error("Error retrieving data: ", error);
+            }
+          };
+          if (
+            typeof findArrLikeImage[0]?.idOperationImage === "number"
+          ) {
+            DeleteLoveImage(findArrLikeImage[0]?.idOperationImage);
           }
-        };
-        handlePostLoveImage(newLoveImage);
-        fetchOperationImage();
-      }
-    } else {
-      // Xử lý khi chọn biểu tượng cảm ơn
-      setChooseIcon(<MdTagFaces />);
+        }
 
-      if (findArrLikeImage?.length > 0) {
-        // xoá like Image
-        const DeleteLikeImage = async (id: number) => {
-          try {
-            await ImageAPI.deleteLoveImage(id);
-            fetchLoveImage();
-          } catch (error) {
-            console.error("Error retrieving data: ", error);
-          }
-        };
         if (
-          typeof findArrLikeImage[0]?.idOperationImage === "number"
+          (icon == "thank" && findArrLoveImage?.length > 0) ||
+          (icon == "heart" && findArrLikeImage?.length > 0)
         ) {
-          DeleteLikeImage(findArrLikeImage[0]?.idOperationImage);
-        }
-        fetchOperationImage();
-      }
-      //  nếu chưa có thì add love image vào
-      else {
-        const newLikeImage = {
-          imageOperationId: numberId,
-          userLikeImageId: userLogin?.id,
-          userLoveImageId: null,
-          // userSavedImageId: null,
-        };
-        const handlePostLikeImage = async (
-          newLikeImage: ILikeLoveImage
-        ) => {
-          try {
-            const response2 = await ImageAPI.postLoveImage(
-              newLikeImage
-            );
-            console.log("response Post", response2.data);
-            fetchLoveImage();
-          } catch (error) {
-            console.error("Error retrieving data: ", error);
+          // edit like love Image
+          const editOperationImage = async (
+            id: number,
+            param: any
+          ) => {
+            try {
+              await ImageAPI.editOperationImage(id, param);
+              fetchLoveImage();
+            } catch (error) {
+              console.error("Error retrieving data: ", error);
+            }
+          };
+          let newOperation: any;
+          if (findArrLikeImage?.length > 0) {
+            newOperation = {
+              userLikeImageId: null,
+              userLoveImageId: userLogin?.id,
+            };
+            console.log("newOperationLike", newOperation);
+            if (
+              typeof findArrLikeImage[0]?.idOperationImage ===
+              "number"
+            ) {
+              editOperationImage(
+                findArrLikeImage[0]?.idOperationImage,
+                newOperation
+              );
+            }
           }
-        };
-        handlePostLikeImage(newLikeImage);
-        fetchOperationImage();
+          if (findArrLoveImage?.length > 0) {
+            newOperation = {
+              userLikeImageId: userLogin?.id,
+              userLoveImageId: null,
+            };
+            console.log("newOperationLove", newOperation);
+            if (
+              typeof findArrLoveImage[0]?.idOperationImage ===
+              "number"
+            ) {
+              editOperationImage(
+                findArrLoveImage[0]?.idOperationImage,
+                newOperation
+              );
+            }
+          }
+        }
+
+        if (
+          findArrLoveImage?.length == 0 &&
+          findArrLikeImage?.length == 0
+        ) {
+          let newLikeLoveImage: any;
+          if (icon == "heart") {
+            newLikeLoveImage = {
+              imageOperationId: numberId,
+              userLikeImageId: null,
+              userLoveImageId: userLogin?.id,
+            };
+          } else {
+            newLikeLoveImage = {
+              imageOperationId: numberId,
+              userLikeImageId: userLogin?.id,
+              userLoveImageId: null,
+            };
+          }
+          const handlePostLoveImage = async (
+            newLikeLoveImage: ILikeLoveImage
+          ) => {
+            try {
+              const response2 = await ImageAPI.postLoveImage(
+                newLikeLoveImage
+              );
+              console.log("response Post", response2.data);
+              fetchLoveImage();
+            } catch (error) {
+              console.error("Error post like love img: ", error);
+            }
+          };
+          handlePostLoveImage(newLikeLoveImage);
+        }
+      } catch (error) {
+        console.error("Error get OperationImage:", error);
       }
-    }
+    };
+    fetchOperationImage1();
+    fetchLoveImage();
   };
 
   const [showRenderUserOperation, setShowRenderUserOperation] =
@@ -618,9 +646,6 @@ const DetailImage: React.FC = () => {
       usersCreateImage[0]?.id
   );
 
-  // const ListFollowedbyUserLogin = userFollowOthers.filter(
-  //   (item) => item.userFollowedbyId === usersCreateImage[0]?.id
-  // );
   const ListFollowedbyUserLogin =
     userFollowOthers[0]?.userFollowOthers || [];
   console.log("ListFollowedbyUserLogin", ListFollowedbyUserLogin);
@@ -630,6 +655,8 @@ const DetailImage: React.FC = () => {
       const deleteFollowed = async (id: number) => {
         try {
           await FollowAPI.deleteFollowed(id);
+          fetchUserFollowOther(userLogin?.id);
+          fetchUserFollowed(idUserCreate);
         } catch (error) {
           console.error("Error retrieving data: ", error);
         }
@@ -637,9 +664,6 @@ const DetailImage: React.FC = () => {
       if (typeof ListFollowedbyUserLogin[0].idFollow === "number") {
         deleteFollowed(ListFollowedbyUserLogin[0].idFollow);
       }
-      fetchUserFollowOther(userLogin?.id);
-      fetchUserFollowed(idUserCreate);
-      setStatusFollow(!statusFollow);
     }
     // add theo theo dõi vào bảng follows
     else {
@@ -650,14 +674,13 @@ const DetailImage: React.FC = () => {
       const handleAddFolowed = async (newFollow: IFollow) => {
         try {
           await FollowAPI.addFollowed(newFollow);
+          fetchUserFollowOther(Number(userLogin?.id));
+          fetchUserFollowed(idUserCreate);
         } catch (error) {
           console.error("Error retrieving data: ", error);
         }
       };
       handleAddFolowed(newFollow);
-      fetchUserFollowOther(userLogin?.id);
-      fetchUserFollowed(idUserCreate);
-      setStatusFollow(!statusFollow);
     }
   };
 
@@ -704,6 +727,7 @@ const DetailImage: React.FC = () => {
   //       });
   //   }
   // };
+  console.log(imageStoreSaved);
 
   return (
     <Container id="wrap-detail">
@@ -746,7 +770,7 @@ const DetailImage: React.FC = () => {
                   id="sp-username"
                   onClick={handleDetailUserCreateImage}
                 >
-                  {usersCreateImage[0]?.username}
+                  {usersCreateImage[0]?.user.username}
                 </span>
                 <span>
                   {userFollowed[0]?.userFollowedbys?.length} người
@@ -953,6 +977,9 @@ const DetailImage: React.FC = () => {
                         className="render-user-operation"
                       >
                         <p>
+                          <span>Thích</span>
+                          <span id="tt-thank">Cảm ơn</span>
+                          <br />
                           <BiSolidHappyHeartEyes className="biso-heart" />
                           <MdTagFaces className="tag-face" />
                         </p>

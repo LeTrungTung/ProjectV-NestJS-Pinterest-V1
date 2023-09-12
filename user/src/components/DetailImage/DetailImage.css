@@ -384,6 +384,7 @@
 .biso-heart {
   color: goldenrod;
   font-size: 25px;
+  margin-left: -8px;
 }
 .biso-heart1 {
   color: goldenrod;
@@ -396,6 +397,7 @@
 .tag-face {
   color: rgb(59, 152, 206);
   font-size: 25px;
+  margin-left: 38px;
 }
 .avatar-name {
   display: flex;
@@ -506,4 +508,7 @@
   display: flex;
   gap: 5px;
   align-items: flex-end;
+}
+#tt-thank {
+  margin-left: 20px;
 }

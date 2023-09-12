@@ -5,6 +5,7 @@ import {
   Post,
   Body,
   Put,
+  Patch,
   Delete,
 } from '@nestjs/common';
 import { OperationImageService } from './operationimage.service';
@@ -29,6 +30,14 @@ export class OperationImageController {
     @Body() operationImage: OperationImage,
   ): Promise<OperationImage> {
     return this.operationImageService.create(operationImage);
+  }
+
+  @Patch(':id')
+  async editoperation(
+    @Param('id') id: string,
+    @Body() operationImage: OperationImage,
+  ): Promise<OperationImage> {
+    return this.operationImageService.update(+id, operationImage);
   }
 
   @Put(':id')

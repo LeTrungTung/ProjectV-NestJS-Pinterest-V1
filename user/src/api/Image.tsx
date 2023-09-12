@@ -57,6 +57,11 @@ export class ImageAPI {
     const url = `/api/v1/operation-image`;
     return axiosClient.get(url);
   }
+
+  static editOperationImage(id: number, param: any): Promise<any> {
+    const url = `/api/v1/operation-image/${id}`;
+    return axiosClient.patch(url, param);
+  }
   static deleteLoveImage(id: number) {
     const url = `/api/v1/operation-image/${id}`;
     return axiosClient.delete(url);
