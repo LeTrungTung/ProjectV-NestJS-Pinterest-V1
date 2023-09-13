@@ -3,8 +3,8 @@ import "./SideBar.css";
 import { BiLogOut, BiSolidUserAccount } from "react-icons/bi";
 import { FiSettings } from "react-icons/fi";
 import { BsSearch, BsChevronDown } from "react-icons/bs";
-import { AiOutlineArrowDown } from "react-icons/ai";
 import { FaRegImages } from "react-icons/fa";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface AdminLogin {
   avatar?: string;
@@ -13,9 +13,19 @@ interface AdminLogin {
 }
 interface SideBarProps {
   onSearchAdmin?: (keyword: string) => void;
+  onCheckSortName?: (check: boolean) => void;
+  onCheckSortFollowed?: (check: boolean) => void;
+  onCheckSortFollowOther?: (check: boolean) => void;
+  onCheckSortAdmin?: (check: boolean) => void;
 }
 
-const SideBar: React.FC<SideBarProps> = ({ onSearchAdmin }) => {
+const SideBar: React.FC<SideBarProps> = ({
+  onSearchAdmin,
+  onCheckSortName,
+  onCheckSortFollowed,
+  onCheckSortFollowOther,
+  onCheckSortAdmin,
+}) => {
   const [searchValue, setSearchValue] = useState(""); // State để lưu giá trị input
   const adminLogin: AdminLogin = JSON.parse(
     localStorage.getItem("adminLogin") || "{}"
@@ -27,19 +37,34 @@ const SideBar: React.FC<SideBarProps> = ({ onSearchAdmin }) => {
   };
   const handleSearchAdmin = () => {
     onSearchAdmin(searchValue);
-    // console.log("value search", searchValue);
+  };
+  const handleSortName = () => {
+    onCheckSortName(true);
+    onCheckSortFollowOther(false);
+    onCheckSortFollowed(false);
+    onCheckSortAdmin(false);
+  };
+  const handleSortFollowed = () => {
+    onCheckSortFollowed(true);
+    onCheckSortName(false);
+    onCheckSortFollowOther(false);
+    onCheckSortAdmin(false);
+  };
+  const handleSortFollowOther = () => {
+    onCheckSortFollowOther(true);
+    onCheckSortFollowed(false);
+    onCheckSortName(false);
+    onCheckSortAdmin(false);
+  };
+  const handleSortAdmin = () => {
+    onCheckSortAdmin(true);
+    onCheckSortFollowOther(false);
+    onCheckSortFollowed(false);
+    onCheckSortName(false);
   };
 
-  const [isCreatedActive, setIsCreatedActive] = useState(true);
-
-  const handleChoice = (value: string) => {
-    if (value === "user") {
-      setIsCreatedActive(true);
-    }
-    if (value === "product") {
-      setIsCreatedActive(false);
-    }
-  };
+  const location = useLocation();
+  const navigate = useNavigate();
   return (
     <div className="container1">
       <div className="top-part">
@@ -87,16 +112,18 @@ const SideBar: React.FC<SideBarProps> = ({ onSearchAdmin }) => {
         <p id="txt-admin">ADMIN</p>
       </div>
       <div
-        // className="manage-user"
-        // className={`manage-user ${
-        //   location.pathname == "/home" ? "activeadmin" : ""
-        // }`}
-        className={`manage-user ${
-          isCreatedActive ? "activeadmin" : ""
-        }`}
-        onClick={() => handleChoice("user")}
+        className={
+          location.pathname == "/home"
+            ? "manage-user activeadmin"
+            : "manage-user"
+        }
       >
-        <div className="manage-user-left">
+        <div
+          className="manage-user-left"
+          onClick={() => {
+            navigate(`/home`);
+          }}
+        >
           <BiSolidUserAccount id="icon-user" />
           <span className="name-user">User Management</span>
         </div>
@@ -114,17 +141,38 @@ const SideBar: React.FC<SideBarProps> = ({ onSearchAdmin }) => {
         </div>
       </div>
 
-      <div className="sort-name">
+      <div className="sort-act hover1">
         <span className="dot">o</span>
-        <span className="txt1">Sort by username</span>
+        <span
+          className="txt1"
+          onClick={() => {
+            handleSortName();
+          }}
+        >
+          Sort by username
+        </span>
       </div>
-      <div className="sort-followed">
+      <div className="sort-act hover1">
         <span className="dot">o</span>
-        <span className="txt1">Sort by followed</span>
+        <span
+          className="txt1"
+          onClick={() => {
+            handleSortFollowed();
+          }}
+        >
+          Sort by followed
+        </span>
       </div>
-      <div className="sort-follow-other">
+      <div className="sort-act hover1">
         <span className="dot">o</span>
-        <span className="txt1">Sort by follow others</span>
+        <span
+          className="txt1"
+          onClick={() => {
+            handleSortFollowOther();
+          }}
+        >
+          Sort by follow others
+        </span>
       </div>
 
       <div className="detail-user">
@@ -136,19 +184,31 @@ const SideBar: React.FC<SideBarProps> = ({ onSearchAdmin }) => {
           <BsChevronDown className="arr-down-mini" />
         </div>
       </div>
-      <div className="sort-name">
+      <div className="sort-act hover1">
         <span className="dot">o</span>
-        <span className="txt1">Sort by admin name</span>
+        <span
+          className="txt1"
+          onClick={() => {
+            handleSortAdmin();
+          }}
+        >
+          Sort by admin name
+        </span>
       </div>
 
       <div
-        // className="manage-product"
-        className={`manage-product ${
-          !isCreatedActive ? "activeadmin" : ""
-        }`}
-        onClick={() => handleChoice("product")}
+        className={
+          location.pathname == "/image"
+            ? "manage-product activeadmin"
+            : "manage-product"
+        }
       >
-        <div className="manage-user-left">
+        <div
+          className="manage-user-left"
+          onClick={() => {
+            navigate(`/image`);
+          }}
+        >
           <FaRegImages id="icon-user" />
           <span className="name-user">Product Management</span>
         </div>
@@ -166,11 +226,11 @@ const SideBar: React.FC<SideBarProps> = ({ onSearchAdmin }) => {
         </div>
       </div>
 
-      <div className="sort-name">
+      <div className="sort-act hover1">
         <span className="dot">o</span>
         <span className="txt1">Sort by image category</span>
       </div>
-      <div className="sort-followed">
+      <div className="sort-act hover1">
         <span className="dot">o</span>
         <span className="txt1">Sort image created</span>
       </div>

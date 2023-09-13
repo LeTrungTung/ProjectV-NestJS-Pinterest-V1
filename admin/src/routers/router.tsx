@@ -13,6 +13,7 @@ import CrudDetail from "../components/crudDetail/CrudDetail";
 import SideBar from "../components/sideBar/SideBar";
 import MainBar from "../components/mainBar/MainBar";
 import Home_Layout from "../layouts/Home/Home_Layout";
+import Image_Layout from "../layouts/Image/Image_Layout";
 
 const Router: React.FC = () => {
   return (
@@ -27,9 +28,6 @@ const Router: React.FC = () => {
 
       <Route element={<RequiredAuth />}>
         <Route path="/images" element={<ImageManage />} />
-        <Route path="/side" element={<SideBar />} />
-        {/* <Route path="/main" element={<MainBar />} /> */}
-        {/* <Route path="/home" element={<Home_Layout />} /> */}
       </Route>
 
       <Route element={<RequiredAuth />}>
@@ -41,6 +39,7 @@ const Router: React.FC = () => {
 
       <Route element={<RequiredAuth />}>
         <Route path="/home" element={<Home_Layout />} />
+        <Route path="/image" element={<Image_Layout />} />
       </Route>
 
       <Route path="/" element={<Main />}></Route>

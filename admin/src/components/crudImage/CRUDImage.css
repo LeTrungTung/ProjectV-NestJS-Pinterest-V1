@@ -1,4 +1,6 @@
 #wrap-cards {
+  width: 1030px;
+  margin-left: 268px;
   margin-top: 20px;
 }
 #id-itembar {
@@ -6,4 +8,11 @@
 }
 .cl-image img {
   border-radius: 20px;
+}
+#title-product-mana {
+  margin-top: -10px !important;
+  font-style: 18px;
+  font-weight: 600;
+  margin-left: 5px;
+  color: rgba(63, 66, 84, 1);
 }

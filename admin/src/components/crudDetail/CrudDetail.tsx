@@ -93,7 +93,7 @@ const CrudDetail: React.FC = () => {
     toast.success("Hiệu chỉnh hoàn thành!", {
       onClose: () => {
         setTimeout(() => {
-          navigate("/images");
+          navigate("/image");
         }, 2000); // Chờ 2 giây trước khi chuyển hướng
       },
     });
@@ -120,7 +120,7 @@ const CrudDetail: React.FC = () => {
     toast.success("Xóa ảnh thành công!", {
       onClose: () => {
         setTimeout(() => {
-          navigate("/images");
+          navigate("/image");
         }, 2000); // Chờ 2 giây trước khi chuyển hướng
       },
     });

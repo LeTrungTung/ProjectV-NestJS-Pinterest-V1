@@ -14,6 +14,8 @@ interface User {
   email: string;
   status: number;
   role: number;
+  numberOfFollowers?: number;
+  numberOfFollowOthers?: number;
 }
 
 interface CountFollow {
@@ -22,13 +24,25 @@ interface CountFollow {
 }
 interface MainProps {
   searchByAdmin: string;
+  checkSortByName: boolean;
+  checkSortByFollowed: boolean;
+  checkSortByFollowOther: boolean;
+  checkSortByAdmin: boolean;
 }
 
 const MainBar: React.FC<MainProps> = (props) => {
-  const { searchByAdmin } = props;
+  const {
+    searchByAdmin,
+    checkSortByName,
+    checkSortByFollowed,
+    checkSortByFollowOther,
+    checkSortByAdmin,
+  } = props;
   console.log("searchByAdmin====>", searchByAdmin);
+  console.log("checkSortByAdmin====>", checkSortByAdmin);
   const [currentPage, setCurrentPage] = useState(1);
   const [userData, setUserData] = useState<User[]>([]);
+
   const [count1Followed, setCount1Followed] = useState<CountFollow[]>(
     []
   );
@@ -78,15 +92,90 @@ const MainBar: React.FC<MainProps> = (props) => {
     fetchAllUsers();
   }, []);
 
-  const dataSearchAdmin = userData.filter(
-    (item) =>
-      item?.username
-        .toLowerCase()
-        .includes(searchByAdmin.toLowerCase().trim()) ||
-      item?.email
-        .toLowerCase()
-        .includes(searchByAdmin.toLowerCase().trim())
-  );
+  const arrConcat = userData.map((item, index) => {
+    const countFolowed = count1Followed[index];
+    const countFolowOther = countFollowedOther[index];
+    return { ...item, ...countFolowed, ...countFolowOther };
+  });
+  console.log("Nối mảng====>", arrConcat);
+
+  //  nếu chọn sort by username
+  if (checkSortByName) {
+    arrConcat.sort((a, b) => {
+      const usernameA = a.username.toLowerCase();
+      const usernameB = b.username.toLowerCase();
+
+      // Tách thành mảng nếu có khoảng trắng và lấy từ cuối cùng
+      const lastWordA: any = usernameA.includes(" ")
+        ? usernameA.split(" ").pop()
+        : usernameA;
+      const lastWordB: any = usernameB.includes(" ")
+        ? usernameB.split(" ").pop()
+        : usernameB;
+
+      if (lastWordA < lastWordB) {
+        return -1;
+      }
+      if (lastWordA > lastWordB) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+  //  nếu chọn sort by followed
+  if (checkSortByFollowed) {
+    arrConcat.sort((a, b) => {
+      const usernameA = Number(a.numberOfFollowers);
+      const usernameB = Number(b.numberOfFollowers);
+      if (usernameA < usernameB) {
+        return 1;
+      }
+      if (usernameA > usernameB) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+
+  // sắp xếp giảm dần nếu chọn sort by follow Other
+  if (checkSortByFollowOther) {
+    arrConcat.sort((a, b) => {
+      const usernameA = Number(a.numberOfFollowOthers);
+      const usernameB = Number(b.numberOfFollowOthers);
+      if (usernameA < usernameB) {
+        return 1;
+      }
+      if (usernameA > usernameB) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+  // Lọc ra các Admin
+  let dataSearchAdmin: any;
+  if (checkSortByAdmin) {
+    const arrAdmin = arrConcat.filter((item) => item.role === 1);
+    dataSearchAdmin = arrAdmin.filter(
+      (item) =>
+        item?.username
+          .toLowerCase()
+          .includes(searchByAdmin.toLowerCase().trim()) ||
+        item?.email
+          .toLowerCase()
+          .includes(searchByAdmin.toLowerCase().trim())
+    );
+  } else {
+    dataSearchAdmin = arrConcat.filter(
+      (item) =>
+        item?.username
+          .toLowerCase()
+          .includes(searchByAdmin.toLowerCase().trim()) ||
+        item?.email
+          .toLowerCase()
+          .includes(searchByAdmin.toLowerCase().trim())
+    );
+  }
+
   console.log("dataSearchAdmin", dataSearchAdmin);
 
   const usersPerPage = 6;
@@ -148,7 +237,7 @@ const MainBar: React.FC<MainProps> = (props) => {
         <Table striped bordered hover size="sm" className="tb-show">
           <thead>
             <tr>
-              <th>STT</th>
+              <th>Id</th>
               <th>Tên người dùng</th>
               <th>Avatar</th>
               <th>Địa chỉ Email</th>
@@ -165,7 +254,7 @@ const MainBar: React.FC<MainProps> = (props) => {
                   key={user.id}
                   className={user.role === 1 ? "active-admin" : ""}
                 >
-                  <td>{index + 1}</td>
+                  <td>{user.id}</td>
                   <td>{user.username}</td>
                   <td>
                     {user?.avatar == null ? (
@@ -180,9 +269,11 @@ const MainBar: React.FC<MainProps> = (props) => {
                     {/* <img src={user.avatarUser} alt="Avatar" /> */}
                   </td>
                   <td>{user.email}</td>
-                  <td>{count1Followed[index]?.numberOfFollowers}</td>
+                  {/* <td>{count1Followed[index]?.numberOfFollowers}</td> */}
+                  <td>{user.numberOfFollowers}</td>
                   <td>
-                    {countFollowedOther[index]?.numberOfFollowOthers}
+                    {/* {countFollowedOther[index]?.numberOfFollowOthers} */}
+                    {user.numberOfFollowOthers}
                   </td>
                   <td>
                     {user?.role === 2 && (

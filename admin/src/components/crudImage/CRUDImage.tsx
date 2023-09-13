@@ -53,7 +53,8 @@ const CRUDImage: React.FC = () => {
 
   return (
     <Container id="wrap-cards">
-      <Box sx={{ width: 1200, height: 450 }}>
+      <p id="title-product-mana">Quản lý danh sách ảnh</p>
+      <Box sx={{ width: 1030, height: 450 }}>
         <ImageList variant="masonry" cols={5} gap={10}>
           {listImage &&
             listImage?.map((item) => (
