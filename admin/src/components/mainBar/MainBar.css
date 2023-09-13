@@ -1,0 +1,86 @@
+.main-bar {
+  margin-left: 285px;
+}
+tr th,
+td {
+  text-align: center;
+}
+#title-user-mana {
+  margin-top: -10px !important;
+  font-style: 18px;
+  font-weight: 600;
+  margin-left: 30px;
+  color: rgba(63, 66, 84, 1);
+}
+td img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.active-admin {
+  font-weight: 700;
+}
+tr td {
+  height: 66px;
+  line-height: 66px;
+}
+thead tr th {
+  background-color: #f5f8fa !important;
+  color: rgba(181, 181, 195, 1) !important;
+}
+
+#sec-right img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.tb-show {
+  margin-left: 30px;
+  margin-top: -5px !important;
+}
+
+/* phân trang */
+.btn-pagination:hover {
+  background-color: #ccc !important;
+}
+.btn-pagination {
+  width: 40px !important;
+  height: 40px !important;
+  font-size: 22px !important;
+  background-color: rgb(110, 74, 74) !important;
+  color: black;
+  border-radius: 50% !important;
+  font-weight: 600 !important;
+  vertical-align: middle;
+  z-index: 1000 !important;
+  border: none !important;
+  padding-top: 2px !important;
+}
+.pre-pagination {
+  background-color: #be9f9f !important;
+  font-weight: 600 !important;
+  font-size: 25px !important;
+  border: none !important;
+  width: 50px !important;
+  height: 50px !important;
+  padding-top: 3px !important;
+  border-radius: 50% !important;
+  color: white !important;
+  z-index: 1000 !important;
+}
+
+.pagination {
+  left: 50%;
+  position: fixed;
+  bottom: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px 10px 10px 10px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px !important;
+  gap: 4px;
+  backdrop-filter: blur(8px);
+}

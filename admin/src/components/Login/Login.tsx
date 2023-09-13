@@ -54,7 +54,7 @@ const Login = () => {
         );
 
         // Chuyển hướng đến trang admin
-        navigate("/admin");
+        navigate("/home");
       } else {
         // setErrorMessage("Invalid credentials");
         newErrors.password = "Thông tin không đúng";
