@@ -3,6 +3,7 @@
   height: 1200px;
   background-color: #1e1e2d;
   overflow-y: auto;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 }
 .top-part {
   display: flex;
@@ -22,8 +23,8 @@
   /* top: 100px; */
   /* left: 80px; */
   font-family: Museo Sans;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   line-height: 60px;
   letter-spacing: 0em;
   text-align: left;
@@ -93,18 +94,17 @@
 .avatar-part {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   border-bottom: 1px solid rgba(45, 45, 67, 1);
 }
 #name-admin {
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman",
-    serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 700;
   line-height: 48px;
   color: rgba(255, 255, 255, 1);
 }
 #email-admin {
-  font-family: "Courier New", Courier, monospace;
+  /* font-family: "Courier New", Courier, monospace; */
   font-size: 12px;
   font-weight: 600;
   line-height: 0px;

@@ -1,5 +1,6 @@
 .main-bar {
   margin-left: 285px;
+  padding: 20px 0;
 }
 tr th,
 td {
@@ -94,16 +95,16 @@ thead tr th {
   margin-left: 250px;
 }
 .total-user {
-  width: 30px;
-  height: 30px;
+  display: inline-flex;
+  width: 35px;
+  height: 35px;
   margin-left: 10px;
   border-radius: 50%;
   color: rgba(0, 158, 246, 1);
-  width: 800px;
   font-style: 14px;
   background-color: #cad9ef;
-  padding: 3px 5px;
-  line-height: 38px;
+  justify-content: center;
+  line-height: 35px;
 }
 .total-admin {
   width: 30px;

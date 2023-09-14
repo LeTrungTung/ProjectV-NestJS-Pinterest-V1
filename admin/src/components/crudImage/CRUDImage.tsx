@@ -85,7 +85,7 @@ const CRUDImage: React.FC<CRUDImageProps> = (props) => {
     <Container id="wrap-cards">
       <span id="title-product-mana">Manage images list</span>
       <span className="totals-image">Total number of images:</span>
-      <span className="total-image">{45}</span>
+      <span className="total-user">{listImage.length}</span>
       <hr />
       <Box sx={{ width: 1030, height: 450 }}>
         <ImageList variant="masonry" cols={5} gap={10}>

@@ -237,7 +237,7 @@ const MainBar: React.FC<MainProps> = (props) => {
       <span className="totals">Total number of users:</span>
       <span className="total-user">{userData.length}</span>
       <span className="totals">Total number of admin:</span>
-      <span className="total-admin">{countAdmin.length}</span>
+      <span className="total-user">{countAdmin.length}</span>
       <div style={{ overflowX: "auto", width: 1030 }}>
         <Table striped bordered hover size="sm" className="tb-show">
           <thead>

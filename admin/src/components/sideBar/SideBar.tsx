@@ -82,7 +82,7 @@ const SideBar: React.FC<SideBarProps> = ({
             alt="logo"
             id="logo"
           />
-          <span id="name-logo">Picture for Life</span>
+          <span id="name-logo">Picture for life</span>
         </div>
         <div id="wrap-logout">
           <BiLogOut id="logout" onClick={handleLogout} />
