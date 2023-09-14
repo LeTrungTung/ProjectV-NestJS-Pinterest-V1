@@ -14,14 +14,22 @@ import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 
 interface ImageItem {
+  categoryImage: any;
   id: number;
   linkImage: string;
   titleImage: string;
   sourceImage: string;
   idImage: number;
 }
+interface CRUDImageProps {
+  searchByImage: string;
+  checkSortByImage: boolean;
+}
 
-const CRUDImage: React.FC = () => {
+const CRUDImage: React.FC<CRUDImageProps> = (props) => {
+  const { searchByImage, checkSortByImage } = props;
+  console.log("searchByImage====>", searchByImage);
+  console.log("checkSortByImage====>", checkSortByImage);
   const [listImage, setListImage] = useState<ImageItem[]>([]);
   const navigate = useNavigate();
   const [hoveredItem, setHoveredItem] = React.useState<number | null>(
@@ -51,13 +59,38 @@ const CRUDImage: React.FC = () => {
   }, []);
   console.log("listImage", listImage);
 
+  //  nếu chọn sort by username
+  if (checkSortByImage) {
+    listImage.sort((a, b) => {
+      const imageA = a.categoryImage.toLowerCase();
+      const imageB = b.categoryImage.toLowerCase();
+
+      if (imageA < imageB) {
+        return -1;
+      }
+      if (imageA > imageB) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  const dataSearchImage = listImage?.filter((item) =>
+    item?.categoryImage
+      .toLowerCase()
+      .includes(searchByImage.toLowerCase().trim())
+  );
+
   return (
     <Container id="wrap-cards">
-      <p id="title-product-mana">Quản lý danh sách ảnh</p>
+      <span id="title-product-mana">Manage images list</span>
+      <span className="totals-image">Total number of images:</span>
+      <span className="total-image">{45}</span>
+      <hr />
       <Box sx={{ width: 1030, height: 450 }}>
         <ImageList variant="masonry" cols={5} gap={10}>
-          {listImage &&
-            listImage?.map((item) => (
+          {dataSearchImage &&
+            dataSearchImage?.map((item) => (
               <ImageListItem
                 key={item.id}
                 className="cl-image"

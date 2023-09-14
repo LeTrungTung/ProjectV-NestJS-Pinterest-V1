@@ -17,6 +17,8 @@ interface SideBarProps {
   onCheckSortFollowed?: (check: boolean) => void;
   onCheckSortFollowOther?: (check: boolean) => void;
   onCheckSortAdmin?: (check: boolean) => void;
+  // onSearchImage?: (keyword: string) => void;
+  onCheckSortImage?: (check: boolean) => void;
 }
 
 const SideBar: React.FC<SideBarProps> = ({
@@ -25,6 +27,8 @@ const SideBar: React.FC<SideBarProps> = ({
   onCheckSortFollowed,
   onCheckSortFollowOther,
   onCheckSortAdmin,
+  // onSearchImage,
+  onCheckSortImage,
 }) => {
   const [searchValue, setSearchValue] = useState(""); // State để lưu giá trị input
   const adminLogin: AdminLogin = JSON.parse(
@@ -37,6 +41,7 @@ const SideBar: React.FC<SideBarProps> = ({
   };
   const handleSearchAdmin = () => {
     onSearchAdmin(searchValue);
+    // onSearchImage(searchValue);
   };
   const handleSortName = () => {
     onCheckSortName(true);
@@ -61,6 +66,9 @@ const SideBar: React.FC<SideBarProps> = ({
     onCheckSortFollowOther(false);
     onCheckSortFollowed(false);
     onCheckSortName(false);
+  };
+  const handleSortImage = () => {
+    onCheckSortImage(true);
   };
 
   const location = useLocation();
@@ -228,7 +236,14 @@ const SideBar: React.FC<SideBarProps> = ({
 
       <div className="sort-act hover1">
         <span className="dot">o</span>
-        <span className="txt1">Sort by image category</span>
+        <span
+          className="txt1"
+          onClick={() => {
+            handleSortImage();
+          }}
+        >
+          Sort by image category
+        </span>
       </div>
       <div className="sort-act hover1">
         <span className="dot">o</span>

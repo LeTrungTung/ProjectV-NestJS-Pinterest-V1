@@ -1,7 +1,7 @@
 #wrap-cards {
   width: 1030px;
   margin-left: 268px;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 #id-itembar {
   display: flex;
@@ -10,9 +10,28 @@
   border-radius: 20px;
 }
 #title-product-mana {
-  margin-top: -10px !important;
+  margin-top: 0px !important;
+  margin-bottom: -10px !important;
   font-style: 18px;
   font-weight: 600;
   margin-left: 5px;
   color: rgba(63, 66, 84, 1);
+}
+.totals-image {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(94, 98, 120, 1);
+  margin-left: 630px;
+}
+.total-image {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  border-radius: 50%;
+  color: rgba(0, 158, 246, 1);
+  width: 800px;
+  font-style: 14px;
+  background-color: #cad9ef;
+  padding: 3px 5px;
+  line-height: 20px;
 }

@@ -153,6 +153,7 @@ const MainBar: React.FC<MainProps> = (props) => {
   }
   // Lọc ra các Admin
   let dataSearchAdmin: any;
+  const countAdmin = userData.filter((item) => item.role === 1);
   if (checkSortByAdmin) {
     const arrAdmin = arrConcat.filter((item) => item.role === 1);
     dataSearchAdmin = arrAdmin.filter(
@@ -232,7 +233,11 @@ const MainBar: React.FC<MainProps> = (props) => {
 
   return (
     <div className="main-bar">
-      <p id="title-user-mana">Quản lý danh sách người dùng</p>
+      <span id="title-user-mana1">Manage users list</span>
+      <span className="totals">Total number of users:</span>
+      <span className="total-user">{userData.length}</span>
+      <span className="totals">Total number of admin:</span>
+      <span className="total-admin">{countAdmin.length}</span>
       <div style={{ overflowX: "auto", width: 1030 }}>
         <Table striped bordered hover size="sm" className="tb-show">
           <thead>
