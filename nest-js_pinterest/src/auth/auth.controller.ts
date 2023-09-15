@@ -10,6 +10,8 @@ export class AuthController {
 
   @Post('register')
   async signUp(@Body() body: any) {
+    console.log(body);
+
     return this.authService.signUp(body);
   }
 

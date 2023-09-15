@@ -17,7 +17,7 @@ require('dotenv').config();
     JwtModule.register({
       // secret: jwtConstants.secret,
       secret: process.env.sceretKey,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '5h' },
     }),
   ],
   providers: [AuthService, LocalStrategy],

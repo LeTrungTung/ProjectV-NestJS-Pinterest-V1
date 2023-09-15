@@ -19,7 +19,7 @@ const initialState: RegisterState = {
 
 export const register = createAsyncThunk(
   "register",
-  async (userData: Promise<any>) => {
+  async (userData: any) => {
     try {
       const response = await UserAPI.register(userData);
       // Xử lý phản hồi từ máy chủ và trả về dữ liệu
